@@ -1,0 +1,905 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 48;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		79E62B4A2DC59D8A20A4B55F /* Pods_SweatNetTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 747B7ED50B7C98372B9B901E /* Pods_SweatNetTests.framework */; };
+		AE16636400D93CB7050C8877 /* Pods_SweatNetUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 750784CA9D329CC51AF62635 /* Pods_SweatNetUITests.framework */; };
+		E96A83E68A7FBD657D17D766 /* Pods_SweatNet.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F5C862B95E50A5C6C236296D /* Pods_SweatNet.framework */; };
+		FA01EC29208E5B640085EF33 /* SNCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA01EC28208E5B640085EF33 /* SNCollectionViewCell.swift */; };
+		FA01EC2B208E6CAC0085EF33 /* Tag.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA01EC2A208E6CAC0085EF33 /* Tag.swift */; };
+		FA01EC2D208E712C0085EF33 /* TagService.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA01EC2C208E712C0085EF33 /* TagService.swift */; };
+		FA0D699A20563BC00071181D /* UserService.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA0D699920563BC00071181D /* UserService.swift */; };
+		FA4C46D2205B4E7E0096490E /* TrimFootageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA4C46D1205B4E7E0096490E /* TrimFootageViewController.swift */; };
+		FA58BA8A20549DCC009A08C3 /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA58BA8920549DCC009A08C3 /* LoginViewController.swift */; };
+		FA58BA8C20549F9C009A08C3 /* Login.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = FA58BA8B20549F9C009A08C3 /* Login.storyboard */; };
+		FA6C5C32208FD82400F6AE06 /* Home.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = FA6C5C31208FD82400F6AE06 /* Home.storyboard */; };
+		FA6C5C33208FD8D400F6AE06 /* Home.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = FA6C5C31208FD82400F6AE06 /* Home.storyboard */; };
+		FA6C5C34208FD8D500F6AE06 /* Home.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = FA6C5C31208FD82400F6AE06 /* Home.storyboard */; };
+		FA7FBE642054B17800581B81 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = FA6D807420548EED004C5D47 /* GoogleService-Info.plist */; };
+		FA7FBE652054B17900581B81 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = FA6D807420548EED004C5D47 /* GoogleService-Info.plist */; };
+		FA7FBE662054B17A00581B81 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = FA6D807420548EED004C5D47 /* GoogleService-Info.plist */; };
+		FA7FBE6A2055F42500581B81 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA7FBE692055F42500581B81 /* User.swift */; };
+		FA7FBE6E2055FA4D00581B81 /* CreateUsernameViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA7FBE6D2055FA4D00581B81 /* CreateUsernameViewController.swift */; };
+		FA957C9A2058C53F000B925E /* StorageService.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA957C992058C53F000B925E /* StorageService.swift */; };
+		FA957C9C2058CB9C000B925E /* PostService.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA957C9B2058CB9C000B925E /* PostService.swift */; };
+		FA957C9E2059AE9E000B925E /* Post.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA957C9D2059AE9E000B925E /* Post.swift */; };
+		FA957CA22059D82D000B925E /* UIImage+Size.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA957CA12059D82D000B925E /* UIImage+Size.swift */; };
+		FA957CA42059D922000B925E /* StorageReference+Post.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA957CA32059D922000B925E /* StorageReference+Post.swift */; };
+		FA957CA62059FE7C000B925E /* CameraViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA957CA52059FE7C000B925E /* CameraViewController.swift */; };
+		FA99AEA0205341340045BC13 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA99AE9F205341340045BC13 /* AppDelegate.swift */; };
+		FA99AEA5205341340045BC13 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = FA99AEA3205341340045BC13 /* Main.storyboard */; };
+		FA99AEA7205341340045BC13 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = FA99AEA6205341340045BC13 /* Assets.xcassets */; };
+		FA99AEB5205341350045BC13 /* SweatNetTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA99AEB4205341350045BC13 /* SweatNetTests.swift */; };
+		FA99AEC0205341350045BC13 /* SweatNetUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA99AEBF205341350045BC13 /* SweatNetUITests.swift */; };
+		FAA6CA00209A923500EEB29E /* TagViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAA6C9FF209A923500EEB29E /* TagViewController.swift */; };
+		FAA771FB20573D9400AEB00A /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAA771FA20573D9400AEB00A /* Constants.swift */; };
+		FAA771FD2057434A00AEB00A /* Storyboard+Utility.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAA771FC2057434A00AEB00A /* Storyboard+Utility.swift */; };
+		FAA771FF205760A300AEB00A /* HomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAA771FE205760A300AEB00A /* HomeViewController.swift */; };
+		FAA77201205873EB00AEB00A /* MainTabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAA77200205873EB00AEB00A /* MainTabBarController.swift */; };
+		FAA7720320587CC200AEB00A /* SNPhotoHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAA7720220587CC200AEB00A /* SNPhotoHelper.swift */; };
+		FABABA06209B91FD00B94406 /* SNPostViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = FABABA05209B91FD00B94406 /* SNPostViewCell.swift */; };
+		FABF3054205C34E600BB9C4E /* SegueFromLeft.swift in Sources */ = {isa = PBXBuildFile; fileRef = FABF3053205C34E600BB9C4E /* SegueFromLeft.swift */; };
+		FAFAE1402074949E00AD3CD8 /* TrimmerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAFAE13F2074949E00AD3CD8 /* TrimmerView.swift */; };
+		FAFAE142207495C500AD3CD8 /* HandlerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAFAE141207495C500AD3CD8 /* HandlerView.swift */; };
+		FAFAE144207495EF00AD3CD8 /* AVAssetTimeSelector.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAFAE143207495EF00AD3CD8 /* AVAssetTimeSelector.swift */; };
+		FAFAE1462074961900AD3CD8 /* AssetVideoScrollView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAFAE1452074961900AD3CD8 /* AssetVideoScrollView.swift */; };
+		FAFAE1482074977B00AD3CD8 /* PlayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAFAE1472074977B00AD3CD8 /* PlayerView.swift */; };
+		FAFAE14A207499D400AD3CD8 /* ThumbSelectorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAFAE149207499D400AD3CD8 /* ThumbSelectorView.swift */; };
+		FAFAE14E2076C19200AD3CD8 /* CreatePostViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAFAE14D2076C19200AD3CD8 /* CreatePostViewController.swift */; };
+		FAFAE15220782FF800AD3CD8 /* CustomSegue.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAFAE15120782FF800AD3CD8 /* CustomSegue.swift */; };
+		FAFAE154207C413E00AD3CD8 /* StateVariables.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAFAE153207C413E00AD3CD8 /* StateVariables.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		FA99AEB1205341350045BC13 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = FA99AE94205341340045BC13 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = FA99AE9B205341340045BC13;
+			remoteInfo = SweatNet;
+		};
+		FA99AEBC205341350045BC13 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = FA99AE94205341340045BC13 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = FA99AE9B205341340045BC13;
+			remoteInfo = SweatNet;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		063C32568E3D1CC342F9C134 /* Pods-SweatNet.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SweatNet.release.xcconfig"; path = "Pods/Target Support Files/Pods-SweatNet/Pods-SweatNet.release.xcconfig"; sourceTree = "<group>"; };
+		0CD6B12C7E7286EE84AD9C91 /* Pods-SweatNetTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SweatNetTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-SweatNetTests/Pods-SweatNetTests.debug.xcconfig"; sourceTree = "<group>"; };
+		2AF002132B39715ABBA48F4C /* Pods-SweatNetTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SweatNetTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-SweatNetTests/Pods-SweatNetTests.release.xcconfig"; sourceTree = "<group>"; };
+		4B73B715F7220581C66746AC /* Pods-SweatNetUITests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SweatNetUITests.release.xcconfig"; path = "Pods/Target Support Files/Pods-SweatNetUITests/Pods-SweatNetUITests.release.xcconfig"; sourceTree = "<group>"; };
+		747B7ED50B7C98372B9B901E /* Pods_SweatNetTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_SweatNetTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		750784CA9D329CC51AF62635 /* Pods_SweatNetUITests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_SweatNetUITests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		946B4716300ADE5E6201FCAA /* Pods-SweatNet.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SweatNet.debug.xcconfig"; path = "Pods/Target Support Files/Pods-SweatNet/Pods-SweatNet.debug.xcconfig"; sourceTree = "<group>"; };
+		9A16D8E1553F7FC2E4CBF849 /* Pods-SweatNetUITests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SweatNetUITests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-SweatNetUITests/Pods-SweatNetUITests.debug.xcconfig"; sourceTree = "<group>"; };
+		F5C862B95E50A5C6C236296D /* Pods_SweatNet.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_SweatNet.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		FA01EC28208E5B640085EF33 /* SNCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SNCollectionViewCell.swift; sourceTree = "<group>"; };
+		FA01EC2A208E6CAC0085EF33 /* Tag.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tag.swift; sourceTree = "<group>"; };
+		FA01EC2C208E712C0085EF33 /* TagService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TagService.swift; sourceTree = "<group>"; };
+		FA0D699920563BC00071181D /* UserService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserService.swift; sourceTree = "<group>"; };
+		FA4C46D1205B4E7E0096490E /* TrimFootageViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrimFootageViewController.swift; sourceTree = "<group>"; };
+		FA58BA8920549DCC009A08C3 /* LoginViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
+		FA58BA8B20549F9C009A08C3 /* Login.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Login.storyboard; sourceTree = "<group>"; };
+		FA6C5C31208FD82400F6AE06 /* Home.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Home.storyboard; sourceTree = "<group>"; };
+		FA6D807420548EED004C5D47 /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; name = "GoogleService-Info.plist"; path = "../../../../../GoogleService-Info.plist"; sourceTree = "<group>"; };
+		FA7FBE692055F42500581B81 /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
+		FA7FBE6D2055FA4D00581B81 /* CreateUsernameViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateUsernameViewController.swift; sourceTree = "<group>"; };
+		FA957C992058C53F000B925E /* StorageService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorageService.swift; sourceTree = "<group>"; };
+		FA957C9B2058CB9C000B925E /* PostService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostService.swift; sourceTree = "<group>"; };
+		FA957C9D2059AE9E000B925E /* Post.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Post.swift; sourceTree = "<group>"; };
+		FA957CA12059D82D000B925E /* UIImage+Size.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImage+Size.swift"; sourceTree = "<group>"; };
+		FA957CA32059D922000B925E /* StorageReference+Post.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "StorageReference+Post.swift"; sourceTree = "<group>"; };
+		FA957CA52059FE7C000B925E /* CameraViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraViewController.swift; sourceTree = "<group>"; };
+		FA99AE9C205341340045BC13 /* SweatNet.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SweatNet.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		FA99AE9F205341340045BC13 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		FA99AEA4205341340045BC13 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		FA99AEA6205341340045BC13 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		FA99AEAB205341340045BC13 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		FA99AEB0205341350045BC13 /* SweatNetTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SweatNetTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		FA99AEB4205341350045BC13 /* SweatNetTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SweatNetTests.swift; sourceTree = "<group>"; };
+		FA99AEB6205341350045BC13 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		FA99AEBB205341350045BC13 /* SweatNetUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SweatNetUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		FA99AEBF205341350045BC13 /* SweatNetUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SweatNetUITests.swift; sourceTree = "<group>"; };
+		FA99AEC1205341350045BC13 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		FAA6C9FF209A923500EEB29E /* TagViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TagViewController.swift; sourceTree = "<group>"; };
+		FAA771FA20573D9400AEB00A /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
+		FAA771FC2057434A00AEB00A /* Storyboard+Utility.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Storyboard+Utility.swift"; sourceTree = "<group>"; };
+		FAA771FE205760A300AEB00A /* HomeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewController.swift; sourceTree = "<group>"; };
+		FAA77200205873EB00AEB00A /* MainTabBarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainTabBarController.swift; sourceTree = "<group>"; };
+		FAA7720220587CC200AEB00A /* SNPhotoHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SNPhotoHelper.swift; sourceTree = "<group>"; };
+		FABABA05209B91FD00B94406 /* SNPostViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SNPostViewCell.swift; sourceTree = "<group>"; };
+		FABF3053205C34E600BB9C4E /* SegueFromLeft.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SegueFromLeft.swift; sourceTree = "<group>"; };
+		FAFAE13F2074949E00AD3CD8 /* TrimmerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrimmerView.swift; sourceTree = "<group>"; };
+		FAFAE141207495C500AD3CD8 /* HandlerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HandlerView.swift; sourceTree = "<group>"; };
+		FAFAE143207495EF00AD3CD8 /* AVAssetTimeSelector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AVAssetTimeSelector.swift; sourceTree = "<group>"; };
+		FAFAE1452074961900AD3CD8 /* AssetVideoScrollView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssetVideoScrollView.swift; sourceTree = "<group>"; };
+		FAFAE1472074977B00AD3CD8 /* PlayerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerView.swift; sourceTree = "<group>"; };
+		FAFAE149207499D400AD3CD8 /* ThumbSelectorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThumbSelectorView.swift; sourceTree = "<group>"; };
+		FAFAE14D2076C19200AD3CD8 /* CreatePostViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreatePostViewController.swift; sourceTree = "<group>"; };
+		FAFAE15120782FF800AD3CD8 /* CustomSegue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomSegue.swift; sourceTree = "<group>"; };
+		FAFAE153207C413E00AD3CD8 /* StateVariables.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StateVariables.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		FA99AE99205341340045BC13 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E96A83E68A7FBD657D17D766 /* Pods_SweatNet.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		FA99AEAD205341350045BC13 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				79E62B4A2DC59D8A20A4B55F /* Pods_SweatNetTests.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		FA99AEB8205341350045BC13 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				AE16636400D93CB7050C8877 /* Pods_SweatNetUITests.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		BAEEAB61A30A15B17B3E7D9A /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				946B4716300ADE5E6201FCAA /* Pods-SweatNet.debug.xcconfig */,
+				063C32568E3D1CC342F9C134 /* Pods-SweatNet.release.xcconfig */,
+				0CD6B12C7E7286EE84AD9C91 /* Pods-SweatNetTests.debug.xcconfig */,
+				2AF002132B39715ABBA48F4C /* Pods-SweatNetTests.release.xcconfig */,
+				9A16D8E1553F7FC2E4CBF849 /* Pods-SweatNetUITests.debug.xcconfig */,
+				4B73B715F7220581C66746AC /* Pods-SweatNetUITests.release.xcconfig */,
+			);
+			name = Pods;
+			sourceTree = "<group>";
+		};
+		E3C896AEFAC0069BFC51FF9A /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				F5C862B95E50A5C6C236296D /* Pods_SweatNet.framework */,
+				747B7ED50B7C98372B9B901E /* Pods_SweatNetTests.framework */,
+				750784CA9D329CC51AF62635 /* Pods_SweatNetUITests.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		FA6D806820548E13004C5D47 /* Controllers */ = {
+			isa = PBXGroup;
+			children = (
+				FA58BA8920549DCC009A08C3 /* LoginViewController.swift */,
+				FA7FBE6D2055FA4D00581B81 /* CreateUsernameViewController.swift */,
+				FAA771FE205760A300AEB00A /* HomeViewController.swift */,
+				FAA77200205873EB00AEB00A /* MainTabBarController.swift */,
+				FA957CA52059FE7C000B925E /* CameraViewController.swift */,
+				FA4C46D1205B4E7E0096490E /* TrimFootageViewController.swift */,
+				FAFAE14D2076C19200AD3CD8 /* CreatePostViewController.swift */,
+				FAA6C9FF209A923500EEB29E /* TagViewController.swift */,
+			);
+			path = Controllers;
+			sourceTree = "<group>";
+		};
+		FA6D806A20548E45004C5D47 /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				FAA771FC2057434A00AEB00A /* Storyboard+Utility.swift */,
+				FA957CA12059D82D000B925E /* UIImage+Size.swift */,
+				FA957CA32059D922000B925E /* StorageReference+Post.swift */,
+			);
+			path = Extensions;
+			sourceTree = "<group>";
+		};
+		FA6D806B20548E4E004C5D47 /* Helpers */ = {
+			isa = PBXGroup;
+			children = (
+				FAA7720220587CC200AEB00A /* SNPhotoHelper.swift */,
+				FABF3053205C34E600BB9C4E /* SegueFromLeft.swift */,
+				FAFAE15120782FF800AD3CD8 /* CustomSegue.swift */,
+			);
+			path = Helpers;
+			sourceTree = "<group>";
+		};
+		FA6D806D20548E5E004C5D47 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				FAFAE13F2074949E00AD3CD8 /* TrimmerView.swift */,
+				FAFAE141207495C500AD3CD8 /* HandlerView.swift */,
+				FAFAE143207495EF00AD3CD8 /* AVAssetTimeSelector.swift */,
+				FAFAE1452074961900AD3CD8 /* AssetVideoScrollView.swift */,
+				FAFAE1472074977B00AD3CD8 /* PlayerView.swift */,
+				FAFAE149207499D400AD3CD8 /* ThumbSelectorView.swift */,
+				FA01EC28208E5B640085EF33 /* SNCollectionViewCell.swift */,
+				FABABA05209B91FD00B94406 /* SNPostViewCell.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		FA6D806E20548E73004C5D47 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				FA6D807420548EED004C5D47 /* GoogleService-Info.plist */,
+				FA99AEAB205341340045BC13 /* Info.plist */,
+				FAA771FA20573D9400AEB00A /* Constants.swift */,
+				FAFAE153207C413E00AD3CD8 /* StateVariables.swift */,
+			);
+			path = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		FA6D806F20548E83004C5D47 /* Storyboards */ = {
+			isa = PBXGroup;
+			children = (
+				FA6C5C31208FD82400F6AE06 /* Home.storyboard */,
+				FA99AEA3205341340045BC13 /* Main.storyboard */,
+				FA58BA8B20549F9C009A08C3 /* Login.storyboard */,
+			);
+			path = Storyboards;
+			sourceTree = "<group>";
+		};
+		FA6D807020548E8A004C5D47 /* Services */ = {
+			isa = PBXGroup;
+			children = (
+				FA0D699920563BC00071181D /* UserService.swift */,
+				FA957C992058C53F000B925E /* StorageService.swift */,
+				FA957C9B2058CB9C000B925E /* PostService.swift */,
+				FA01EC2C208E712C0085EF33 /* TagService.swift */,
+			);
+			path = Services;
+			sourceTree = "<group>";
+		};
+		FA6D807220548EA5004C5D47 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				FA7FBE692055F42500581B81 /* User.swift */,
+				FA957C9D2059AE9E000B925E /* Post.swift */,
+				FA01EC2A208E6CAC0085EF33 /* Tag.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		FA99AE93205341340045BC13 = {
+			isa = PBXGroup;
+			children = (
+				FA99AE9E205341340045BC13 /* SweatNet */,
+				FA99AEB3205341350045BC13 /* SweatNetTests */,
+				FA99AEBE205341350045BC13 /* SweatNetUITests */,
+				FA99AE9D205341340045BC13 /* Products */,
+				BAEEAB61A30A15B17B3E7D9A /* Pods */,
+				E3C896AEFAC0069BFC51FF9A /* Frameworks */,
+			);
+			sourceTree = "<group>";
+		};
+		FA99AE9D205341340045BC13 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				FA99AE9C205341340045BC13 /* SweatNet.app */,
+				FA99AEB0205341350045BC13 /* SweatNetTests.xctest */,
+				FA99AEBB205341350045BC13 /* SweatNetUITests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		FA99AE9E205341340045BC13 /* SweatNet */ = {
+			isa = PBXGroup;
+			children = (
+				FA99AE9F205341340045BC13 /* AppDelegate.swift */,
+				FA6D807220548EA5004C5D47 /* Models */,
+				FA6D807020548E8A004C5D47 /* Services */,
+				FA6D806F20548E83004C5D47 /* Storyboards */,
+				FA6D806E20548E73004C5D47 /* Supporting Files */,
+				FA6D806D20548E5E004C5D47 /* Views */,
+				FA6D806B20548E4E004C5D47 /* Helpers */,
+				FA6D806A20548E45004C5D47 /* Extensions */,
+				FA6D806820548E13004C5D47 /* Controllers */,
+				FA99AEA6205341340045BC13 /* Assets.xcassets */,
+			);
+			path = SweatNet;
+			sourceTree = "<group>";
+		};
+		FA99AEB3205341350045BC13 /* SweatNetTests */ = {
+			isa = PBXGroup;
+			children = (
+				FA99AEB4205341350045BC13 /* SweatNetTests.swift */,
+				FA99AEB6205341350045BC13 /* Info.plist */,
+			);
+			path = SweatNetTests;
+			sourceTree = "<group>";
+		};
+		FA99AEBE205341350045BC13 /* SweatNetUITests */ = {
+			isa = PBXGroup;
+			children = (
+				FA99AEBF205341350045BC13 /* SweatNetUITests.swift */,
+				FA99AEC1205341350045BC13 /* Info.plist */,
+			);
+			path = SweatNetUITests;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		FA99AE9B205341340045BC13 /* SweatNet */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = FA99AEC4205341350045BC13 /* Build configuration list for PBXNativeTarget "SweatNet" */;
+			buildPhases = (
+				C136C419938DFDE3581ED96D /* [CP] Check Pods Manifest.lock */,
+				FA99AE98205341340045BC13 /* Sources */,
+				FA99AE99205341340045BC13 /* Frameworks */,
+				FA99AE9A205341340045BC13 /* Resources */,
+				A8893C63E61BBFF75BDB7661 /* [CP] Embed Pods Frameworks */,
+				E7D79E4AC6A9811CDC9533D9 /* [CP] Copy Pods Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = SweatNet;
+			productName = SweatNet;
+			productReference = FA99AE9C205341340045BC13 /* SweatNet.app */;
+			productType = "com.apple.product-type.application";
+		};
+		FA99AEAF205341350045BC13 /* SweatNetTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = FA99AEC7205341350045BC13 /* Build configuration list for PBXNativeTarget "SweatNetTests" */;
+			buildPhases = (
+				DDA9DBCF68FF6D40943F51ED /* [CP] Check Pods Manifest.lock */,
+				FA99AEAC205341350045BC13 /* Sources */,
+				FA99AEAD205341350045BC13 /* Frameworks */,
+				FA99AEAE205341350045BC13 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				FA99AEB2205341350045BC13 /* PBXTargetDependency */,
+			);
+			name = SweatNetTests;
+			productName = SweatNetTests;
+			productReference = FA99AEB0205341350045BC13 /* SweatNetTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		FA99AEBA205341350045BC13 /* SweatNetUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = FA99AECA205341350045BC13 /* Build configuration list for PBXNativeTarget "SweatNetUITests" */;
+			buildPhases = (
+				CAF1AEDF4EAB49FB60EEDE71 /* [CP] Check Pods Manifest.lock */,
+				FA99AEB7205341350045BC13 /* Sources */,
+				FA99AEB8205341350045BC13 /* Frameworks */,
+				FA99AEB9205341350045BC13 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				FA99AEBD205341350045BC13 /* PBXTargetDependency */,
+			);
+			name = SweatNetUITests;
+			productName = SweatNetUITests;
+			productReference = FA99AEBB205341350045BC13 /* SweatNetUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		FA99AE94205341340045BC13 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastSwiftUpdateCheck = 0920;
+				LastUpgradeCheck = 0920;
+				ORGANIZATIONNAME = SweatNet;
+				TargetAttributes = {
+					FA99AE9B205341340045BC13 = {
+						CreatedOnToolsVersion = 9.2;
+						ProvisioningStyle = Automatic;
+					};
+					FA99AEAF205341350045BC13 = {
+						CreatedOnToolsVersion = 9.2;
+						ProvisioningStyle = Automatic;
+						TestTargetID = FA99AE9B205341340045BC13;
+					};
+					FA99AEBA205341350045BC13 = {
+						CreatedOnToolsVersion = 9.2;
+						ProvisioningStyle = Automatic;
+						TestTargetID = FA99AE9B205341340045BC13;
+					};
+				};
+			};
+			buildConfigurationList = FA99AE97205341340045BC13 /* Build configuration list for PBXProject "SweatNet" */;
+			compatibilityVersion = "Xcode 8.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = FA99AE93205341340045BC13;
+			productRefGroup = FA99AE9D205341340045BC13 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				FA99AE9B205341340045BC13 /* SweatNet */,
+				FA99AEAF205341350045BC13 /* SweatNetTests */,
+				FA99AEBA205341350045BC13 /* SweatNetUITests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		FA99AE9A205341340045BC13 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				FA58BA8C20549F9C009A08C3 /* Login.storyboard in Resources */,
+				FA6C5C32208FD82400F6AE06 /* Home.storyboard in Resources */,
+				FA7FBE642054B17800581B81 /* GoogleService-Info.plist in Resources */,
+				FA99AEA7205341340045BC13 /* Assets.xcassets in Resources */,
+				FA99AEA5205341340045BC13 /* Main.storyboard in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		FA99AEAE205341350045BC13 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				FA7FBE652054B17900581B81 /* GoogleService-Info.plist in Resources */,
+				FA6C5C33208FD8D400F6AE06 /* Home.storyboard in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		FA99AEB9205341350045BC13 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				FA7FBE662054B17A00581B81 /* GoogleService-Info.plist in Resources */,
+				FA6C5C34208FD8D500F6AE06 /* Home.storyboard in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		A8893C63E61BBFF75BDB7661 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${SRCROOT}/Pods/Target Support Files/Pods-SweatNet/Pods-SweatNet-frameworks.sh",
+				"${BUILT_PRODUCTS_DIR}/GTMSessionFetcher/GTMSessionFetcher.framework",
+				"${BUILT_PRODUCTS_DIR}/GoogleToolboxForMac/GoogleToolboxForMac.framework",
+				"${BUILT_PRODUCTS_DIR}/Kingfisher/Kingfisher.framework",
+				"${BUILT_PRODUCTS_DIR}/SearchTextField/SearchTextField.framework",
+				"${BUILT_PRODUCTS_DIR}/leveldb-library/leveldb.framework",
+				"${BUILT_PRODUCTS_DIR}/nanopb/nanopb.framework",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputPaths = (
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/GTMSessionFetcher.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/GoogleToolboxForMac.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Kingfisher.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SearchTextField.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/leveldb.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/nanopb.framework",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-SweatNet/Pods-SweatNet-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		C136C419938DFDE3581ED96D /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-SweatNet-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		CAF1AEDF4EAB49FB60EEDE71 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-SweatNetUITests-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		DDA9DBCF68FF6D40943F51ED /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-SweatNetTests-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		E7D79E4AC6A9811CDC9533D9 /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${SRCROOT}/Pods/Target Support Files/Pods-SweatNet/Pods-SweatNet-resources.sh",
+				"${PODS_CONFIGURATION_BUILD_DIR}/FirebaseUI/FirebaseAuthUI.bundle",
+			);
+			name = "[CP] Copy Pods Resources";
+			outputPaths = (
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/FirebaseAuthUI.bundle",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-SweatNet/Pods-SweatNet-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		FA99AE98205341340045BC13 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				FAA7720320587CC200AEB00A /* SNPhotoHelper.swift in Sources */,
+				FAFAE14A207499D400AD3CD8 /* ThumbSelectorView.swift in Sources */,
+				FA7FBE6A2055F42500581B81 /* User.swift in Sources */,
+				FA58BA8A20549DCC009A08C3 /* LoginViewController.swift in Sources */,
+				FA01EC29208E5B640085EF33 /* SNCollectionViewCell.swift in Sources */,
+				FAFAE1482074977B00AD3CD8 /* PlayerView.swift in Sources */,
+				FAA77201205873EB00AEB00A /* MainTabBarController.swift in Sources */,
+				FA957C9E2059AE9E000B925E /* Post.swift in Sources */,
+				FA0D699A20563BC00071181D /* UserService.swift in Sources */,
+				FA957CA22059D82D000B925E /* UIImage+Size.swift in Sources */,
+				FABF3054205C34E600BB9C4E /* SegueFromLeft.swift in Sources */,
+				FAA771FF205760A300AEB00A /* HomeViewController.swift in Sources */,
+				FA01EC2B208E6CAC0085EF33 /* Tag.swift in Sources */,
+				FAA6CA00209A923500EEB29E /* TagViewController.swift in Sources */,
+				FAA771FD2057434A00AEB00A /* Storyboard+Utility.swift in Sources */,
+				FA957C9C2058CB9C000B925E /* PostService.swift in Sources */,
+				FAFAE154207C413E00AD3CD8 /* StateVariables.swift in Sources */,
+				FA957CA42059D922000B925E /* StorageReference+Post.swift in Sources */,
+				FAA771FB20573D9400AEB00A /* Constants.swift in Sources */,
+				FAFAE1462074961900AD3CD8 /* AssetVideoScrollView.swift in Sources */,
+				FA7FBE6E2055FA4D00581B81 /* CreateUsernameViewController.swift in Sources */,
+				FA957C9A2058C53F000B925E /* StorageService.swift in Sources */,
+				FAFAE142207495C500AD3CD8 /* HandlerView.swift in Sources */,
+				FA957CA62059FE7C000B925E /* CameraViewController.swift in Sources */,
+				FA99AEA0205341340045BC13 /* AppDelegate.swift in Sources */,
+				FAFAE144207495EF00AD3CD8 /* AVAssetTimeSelector.swift in Sources */,
+				FAFAE14E2076C19200AD3CD8 /* CreatePostViewController.swift in Sources */,
+				FABABA06209B91FD00B94406 /* SNPostViewCell.swift in Sources */,
+				FA01EC2D208E712C0085EF33 /* TagService.swift in Sources */,
+				FA4C46D2205B4E7E0096490E /* TrimFootageViewController.swift in Sources */,
+				FAFAE15220782FF800AD3CD8 /* CustomSegue.swift in Sources */,
+				FAFAE1402074949E00AD3CD8 /* TrimmerView.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		FA99AEAC205341350045BC13 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				FA99AEB5205341350045BC13 /* SweatNetTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		FA99AEB7205341350045BC13 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				FA99AEC0205341350045BC13 /* SweatNetUITests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		FA99AEB2205341350045BC13 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = FA99AE9B205341340045BC13 /* SweatNet */;
+			targetProxy = FA99AEB1205341350045BC13 /* PBXContainerItemProxy */;
+		};
+		FA99AEBD205341350045BC13 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = FA99AE9B205341340045BC13 /* SweatNet */;
+			targetProxy = FA99AEBC205341350045BC13 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		FA99AEA3205341340045BC13 /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				FA99AEA4205341340045BC13 /* Base */,
+			);
+			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		FA99AEC2205341350045BC13 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.2;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		FA99AEC3205341350045BC13 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.2;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = iphoneos;
+				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		FA99AEC5205341350045BC13 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 946B4716300ADE5E6201FCAA /* Pods-SweatNet.debug.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 93AUS93MBN;
+				INFOPLIST_FILE = "$(SRCROOT)/SweatNet/Supporting Files/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.sweatnet.SweatNet;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 4.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		FA99AEC6205341350045BC13 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 063C32568E3D1CC342F9C134 /* Pods-SweatNet.release.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 93AUS93MBN;
+				INFOPLIST_FILE = "$(SRCROOT)/SweatNet/Supporting Files/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.sweatnet.SweatNet;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 4.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		FA99AEC8205341350045BC13 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 0CD6B12C7E7286EE84AD9C91 /* Pods-SweatNetTests.debug.xcconfig */;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				INFOPLIST_FILE = SweatNetTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.sweatnet.SweatNetTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 4.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/SweatNet.app/SweatNet";
+			};
+			name = Debug;
+		};
+		FA99AEC9205341350045BC13 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 2AF002132B39715ABBA48F4C /* Pods-SweatNetTests.release.xcconfig */;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				INFOPLIST_FILE = SweatNetTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.sweatnet.SweatNetTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 4.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/SweatNet.app/SweatNet";
+			};
+			name = Release;
+		};
+		FA99AECB205341350045BC13 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 9A16D8E1553F7FC2E4CBF849 /* Pods-SweatNetUITests.debug.xcconfig */;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				CODE_SIGN_STYLE = Automatic;
+				INFOPLIST_FILE = SweatNetUITests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.sweatnet.SweatNetUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 4.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = SweatNet;
+			};
+			name = Debug;
+		};
+		FA99AECC205341350045BC13 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 4B73B715F7220581C66746AC /* Pods-SweatNetUITests.release.xcconfig */;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				CODE_SIGN_STYLE = Automatic;
+				INFOPLIST_FILE = SweatNetUITests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.sweatnet.SweatNetUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 4.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = SweatNet;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		FA99AE97205341340045BC13 /* Build configuration list for PBXProject "SweatNet" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				FA99AEC2205341350045BC13 /* Debug */,
+				FA99AEC3205341350045BC13 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		FA99AEC4205341350045BC13 /* Build configuration list for PBXNativeTarget "SweatNet" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				FA99AEC5205341350045BC13 /* Debug */,
+				FA99AEC6205341350045BC13 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		FA99AEC7205341350045BC13 /* Build configuration list for PBXNativeTarget "SweatNetTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				FA99AEC8205341350045BC13 /* Debug */,
+				FA99AEC9205341350045BC13 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		FA99AECA205341350045BC13 /* Build configuration list for PBXNativeTarget "SweatNetUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				FA99AECB205341350045BC13 /* Debug */,
+				FA99AECC205341350045BC13 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = FA99AE94205341340045BC13 /* Project object */;
+}
