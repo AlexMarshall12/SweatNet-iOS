@@ -30,4 +30,8 @@ extension StorageReference {
         
         return Storage.storage().reference().child("thumbnails/posts/\(uid)/\(timestamp).jpg")
     }
+    static func thumnailImageReference(title:String) -> StorageReference {
+        let uid = User.current.uid
+        return Storage.storage().reference().child("thumbnails/posts/\(uid)/\(title).jpg")
+    }
 }

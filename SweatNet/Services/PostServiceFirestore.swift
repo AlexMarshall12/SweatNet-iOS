@@ -1,17 +1,18 @@
 //
-//  PostService.swift
+//  PostServiceFirestore.swift
 //  SweatNet
 //
-//  Created by Alex on 3/13/18.
+//  Created by Alex on 5/9/18.
 //  Copyright © 2018 SweatNet. All rights reserved.
 //
 
-import UIKit
+import Foundation
 import FirebaseStorage
-import FirebaseDatabase
+import FirebaseFirestore
+import UIKit
 
-struct PostServiceBack {
-
+struct PostService2 {
+    
     static func createImagePost(image: UIImage, tagTitle: String, notes: String) {
         let imageRef = StorageReference.newPostImageReference()
         StorageService.uploadImage(image, at: imageRef) { (downloadURL) in
@@ -23,7 +24,7 @@ struct PostServiceBack {
             create(forURLString: urlString, tagTitle: tagTitle, Notes: notes)
         }
     }
-
+    
     static func createVideoPost(video: URL, tagTitle: String, notes: String) {
         let videoRef = StorageReference.newPostVideoReference()
         StorageService.uploadVideo(video as NSURL, at: videoRef){ (downloadURL) in
@@ -36,17 +37,18 @@ struct PostServiceBack {
     }
     private static func create(forURLString urlString: String, tagTitle: String, Notes: String) {
         
-        // create new post in database
-        // 1
-        let currentUser = User.current
-        // 2
+        let currentUser = User2.current
         let Tags = [tagTitle]
-        let post = Post(mediaURL: urlString, tags: Tags, notes: Notes)
-        // 3
-        let dict = post.dictValue
-        // 4
-        let postRef = Database.database().reference().child("posts").child(currentUser.uid).childByAutoId()
-        // 5
-        postRef.updateChildValues(dict)
+        let tagDict = [tagTitle: UInt64(Date().timeIntervalSince1970)]
+        
+        let post = Post2(mediaURL: urlString, tagDict: tagDict, notes: Notes,timeStamp: Date())
+        let docRef = Firestore.firestore().collection("users").document(currentUser.uid).collection("posts")
+        docRef.addDocument(data: post.dictValue) { err in
+            if let err = err {
+                print("Error writing document: \(err)")
+            } else {
+                print("Document successfully written!")
+            }
+        }
     }
 }

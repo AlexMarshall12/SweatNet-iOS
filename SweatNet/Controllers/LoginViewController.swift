@@ -33,6 +33,7 @@ class LoginViewController: UIViewController {
         
         // 3
         let authViewController = authUI.authViewController()
+        print("login button tapped")
         present(authViewController, animated: true)
     }
     override func didReceiveMemoryWarning() {
@@ -64,16 +65,18 @@ extension LoginViewController: FUIAuthDelegate {
             else { return }
         
         // 2
-        UserService.show(forUID: user.uid) { (user) in
+        UserService2.show(forUID: user.uid) { (user) in
+            print("user show")
             if let user = user {
                 // handle existing user
-                User.setCurrent(user,writeToUserDefaults: true)
+                User2.setCurrent(user,writeToUserDefaults: true)
                 
                 let initialViewController = UIStoryboard.initialViewController(for: .main)
                 self.view.window?.rootViewController = initialViewController
                 self.view.window?.makeKeyAndVisible()
                 
             } else {
+                
                 // handle new user
                 self.performSegue(withIdentifier: Constants.Segue.toCreateUsername, sender: self)
             }

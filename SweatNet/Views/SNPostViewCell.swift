@@ -10,4 +10,5 @@ import UIKit
 
 class SNPostViewCell: UICollectionViewCell {
     
+    @IBOutlet weak var imageView: UIImageView!
 }

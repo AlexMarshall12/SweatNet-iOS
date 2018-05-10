@@ -11,7 +11,7 @@ import FirebaseDatabase
 import FirebaseStorage
 import UIKit
 
-struct TagService {
+struct TagServiceBack {
 
     static func ifTagExists(id:String,title:String,latestThumbnailImage:UIImage,latestUpdate:UInt64){
         let currentUser = User.current

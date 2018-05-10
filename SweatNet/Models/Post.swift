@@ -1,54 +1,45 @@
 //
-//  Post.swift
+//  File.swift
 //  SweatNet
 //
-//  Created by Alex on 3/14/18.
+//  Created by Alex on 5/8/18.
 //  Copyright © 2018 SweatNet. All rights reserved.
 //
-
-import UIKit
-import FirebaseDatabase.FIRDataSnapshot
-
+import Foundation
 class Post {
-    var key: String?
-    let mediaURL: String
-    let creationDate: Date
-    let tags: [String: UInt64]
-    let notes: String
+    var id: String?
+    var mediaURL: String
+    var timeStamp: Date
+    var tags: [String:UInt64]
+    var notes: String
     
-    init?(snapshot: DataSnapshot) {
-        guard let dict = snapshot.value as? [String : Any],
-            let mediaURL = dict["media_url"] as? String,
-            let createdAgo = dict["created_at"] as? TimeInterval,
-            let tags = dict["tags"] as? [String: UInt64],
-            let notes = dict["notes"] as? String
-            else { return nil }
-        
-        self.key = snapshot.key
+    init(mediaURL: String, tagDict: [String:UInt64], notes: String,timeStamp:Date){
         self.mediaURL = mediaURL
-        self.tags = tags
-        self.notes = notes
-        self.creationDate = Date(timeIntervalSince1970: createdAgo)
-    }
-    
-    init(mediaURL: String, tags: Array<String>, notes: String) {
-        self.mediaURL = mediaURL
-        let creationDate = Date()
-        self.creationDate = creationDate
-        self.notes = notes
-        var tagDict = [String: UInt64]()
-        for tag in tags {
-            tagDict[tag] = UInt64(creationDate.timeIntervalSince1970)
-        }
         self.tags = tagDict
+        self.notes = notes
+        self.timeStamp = timeStamp
     }
-
-    var dictValue: [String : Any] {
-        let createdAgo = creationDate.timeIntervalSince1970
-        return ["media_url" : mediaURL,
-                "tags": tags,
-                "notes": notes,
-                "created_at" : createdAgo]
+    init?(dictionary: [String : Any]) {
+        guard let mediaURL = dictionary["mediaURL"] as? String,
+            let id = dictionary["id"] as? String,
+            let notes = dictionary["notes"] as? String,
+            let timeStamp = dictionary["timeStamp"] as? Date,
+            let tags = dictionary["tags"] as? [String:UInt64]
+        else {return nil}
+        
+        self.id = id
+        self.mediaURL = mediaURL
+        self.notes = notes
+        self.timeStamp = timeStamp
+        self.tags = tags
     }
-    
+    var dictValue: [String: Any] {
+        return [
+            "mediaURL":mediaURL,
+            "notes" : notes,
+            "timeStamp" : timeStamp,
+            "tags": tags
+        ]
+    }
 }
+

@@ -1,27 +1,25 @@
 //
-//  User2.swift
+//  User.swift
 //  SweatNet
 //
-//  Created by Alex on 5/8/18.
+//  Created by Alex on 3/11/18.
 //  Copyright © 2018 SweatNet. All rights reserved.
 //
-
-import Foundation
 
 import UIKit
 import FirebaseDatabase.FIRDataSnapshot
 
 
-class User: NSObject {
+class UserBack: NSObject {
     
     
     // MARK: - Singleton
     
     // 1
-    private static var _current: User2?
+    private static var _current: User?
     
     // 2
-    static var current: User2 {
+    static var current: User {
         // 3
         guard let currentUser = _current else {
             fatalError("Error: current user doesn't exist")
@@ -34,7 +32,7 @@ class User: NSObject {
     // MARK: - Class Methods
     
     // 5
-    static func setCurrent(_ user: User2,writeToUserDefaults: Bool = false) {
+    static func setCurrent(_ user: User,writeToUserDefaults: Bool = false) {
         if writeToUserDefaults {
             // 3
             let data = NSKeyedArchiver.archivedData(withRootObject: user)
@@ -58,10 +56,12 @@ class User: NSObject {
         super.init()
     }
     
-    init?(dictionary: [String : Any]) {
-        guard let username = dictionary["username"] as? String, let uid = dictionary["uid"] as? String
+    init?(snapshot: DataSnapshot) {
+        guard let dict = snapshot.value as? [String : Any],
+            let username = dict["username"] as? String
             else { return nil }
-        self.uid = uid
+        
+        self.uid = snapshot.key
         self.username = username
         super.init()
     }
@@ -69,13 +69,11 @@ class User: NSObject {
         guard let uid = aDecoder.decodeObject(forKey: Constants.UserDefaults.uid) as? String,
             let username = aDecoder.decodeObject(forKey: Constants.UserDefaults.username) as? String
             else { return nil }
+        
         self.uid = uid
         self.username = username
         
         super.init()
-    }
-    var dictValue: [String: Any] {
-        return ["username": username]
     }
 }
 

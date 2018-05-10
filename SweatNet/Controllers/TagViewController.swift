@@ -8,7 +8,7 @@
 
 import UIKit
 
-private var reuseIdentifier = "postCell"
+private var reuseIdentifier = "PostCell"
 
 class TagViewController: UIViewController,  UICollectionViewDelegate, UICollectionViewDataSource {
     var posts = [Post]()
@@ -16,6 +16,7 @@ class TagViewController: UIViewController,  UICollectionViewDelegate, UICollecti
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        print("loaded tag view controller")
         UserService.posts(for: User.current) { (posts) in
             self.posts = posts
             self.collectionView.reloadData()
@@ -29,12 +30,14 @@ class TagViewController: UIViewController,  UICollectionViewDelegate, UICollecti
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 8
+        return posts.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let post = posts[indexPath.row]
+        //let _ = posts[indexPath.row]
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: reuseIdentifier, for: indexPath) as! SNPostViewCell
+        //let thumbURL = URL(string: )
+        //cell.imageView.kf.setImage(with: thumbURL)
         cell.backgroundColor = UIColor.black
         return cell
     }

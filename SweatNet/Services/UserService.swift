@@ -10,7 +10,7 @@ import Foundation
 import FirebaseAuth.FIRUser
 import FirebaseDatabase
 
-struct UserService {
+struct UserServiceBack {
     static func show(forUID uid: String, completion: @escaping (User?) -> Void) {
         let ref = Database.database().reference().child("users").child(uid)
         ref.observeSingleEvent(of: .value, with: { (snapshot) in
@@ -39,8 +39,7 @@ struct UserService {
         }
     }
     static func posts(for user: User, completion: @escaping ([Post]) -> Void) {
-        let ref = Database.database().reference().child("posts").child(user.uid)
-        
+        let ref = Database.database().reference().child("posts").child(user.uid).queryOrdered(byChild: "rocky")
         ref.observeSingleEvent(of: .value, with: { (snapshot) in
             guard let snapshot = snapshot.children.allObjects as? [DataSnapshot] else {
                 return completion([])

@@ -18,18 +18,18 @@ class CreatePostViewController: UIViewController,UITextViewDelegate,UITextFieldD
     var thumbnailImage: UIImage?
     var screenshotOut: UIImage?
     var videoURL: URL?
-    var tags = [Tag]()
+    var tags = [Tag2]()
     var selectedTagID: String?
     var selectedTagTitle: String?
     var filter_items = [SearchTextFieldItem]()
-    var post: Post?
+    var post: Post2?
 
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        UserService.tags(for: User.current) { (tags) in
+        UserService2.tags(for: User2.current) { (tags) in
             for tag in tags{
-                self.filter_items.append(SearchTextFieldItem(title: tag.title, subtitle: tag.key,image: UIImage(named: "Camera")))
+                self.filter_items.append(SearchTextFieldItem(title: tag.title, subtitle: tag.id,image: UIImage(named: "Camera")))
             }
             self.mySearchTextField.filterItems(self.filter_items)
         }
@@ -54,7 +54,8 @@ class CreatePostViewController: UIViewController,UITextViewDelegate,UITextFieldD
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "goToCamera" {
-            TagService.ifTagExists(id: self.selectedTagID ?? "placeholder", title: mySearchTextField.text!, latestThumbnailImage: self.thumbnailImage!, latestUpdate: UInt64(Date().timeIntervalSince1970))
+            //Note uploadThumbnail calls create or update tag as needed with new url. 
+            TagService2.uploadThumbnail(title: mySearchTextField.text!, latestThumbnailImage: self.thumbnailImage!)
             
             //Let post service know what tag to add to the post itself.
             let tagTitle = mySearchTextField.text!

@@ -12,11 +12,11 @@ import Kingfisher
 private var reuseIdentifier = "TagCell"
 
 class HomeViewController: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource {
-    var tags = [Tag]()
+    var tags = [Tag2]()
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        UserService.tags(for: User.current) { (tags) in
+        UserService2.tags(for: User2.current) { (tags) in
             print(tags)
             self.tags = tags
             self.collectionView.reloadData()
@@ -48,8 +48,14 @@ class HomeViewController: UIViewController, UICollectionViewDelegate, UICollecti
         // Configure the cell
         //let imageURL = URL(string: tag.imageURL)
         cell.backgroundColor = UIColor.black
-        cell.cellLabel.text = tag.title
-        cell.cellLabel.textColor = UIColor.white
+        cell.tagTitle.text = tag.title
+        let latestUpdateDate = tag.latestUpdate
+        cell.latestUpdate.text = timeAgoSinceDate(latestUpdateDate)
+        let thumbURL = URL(string: tag.latestThumbnailURL)
+        cell.imageView.kf.setImage(with: thumbURL)
+        cell.latestUpdate.textColor = UIColor(red:0.40, green:0.80, blue:1.00, alpha:1.0)
+        cell.tagTitle.textColor = UIColor.white
+        cell.latestUpdate.font = UIFont(name: "HelveticaNeue", size:11.0)
         return cell
     }
     

@@ -11,6 +11,8 @@ import UIKit
 class SNTagViewCell: UICollectionViewCell {
     
     @IBOutlet var imageView: UIImageView!
-    @IBOutlet weak var cellLabel: UILabel!
+
+    @IBOutlet weak var tagTitle: UILabel!
     
+    @IBOutlet weak var latestUpdate: UILabel!
 }
