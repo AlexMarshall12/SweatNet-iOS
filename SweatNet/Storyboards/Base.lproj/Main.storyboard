@@ -21,38 +21,48 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="72O-zc-b9m" userLabel="camPreview">
-                                <rect key="frame" x="0.0" y="44" width="375" height="618"/>
+                                <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                                 <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                             </view>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="OJu-oK-EUK">
-                                <rect key="frame" x="38" y="184" width="298" height="298"/>
-                                <state key="normal" image="Record"/>
-                                <connections>
-                                    <action selector="cameraButton_TouchUpInside:" destination="PRt-op-jWe" eventType="touchUpInside" id="mAV-Ue-1Na"/>
-                                </connections>
-                            </button>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Record" translatesAutoresizingMaskIntoConstraints="NO" id="2xH-ge-ksx" userLabel="recordingSpinner">
+                                <rect key="frame" x="-0.5" y="145.5" width="375" height="375"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" secondItem="2xH-ge-ksx" secondAttribute="height" multiplier="1:1" id="qYk-0G-kNs"/>
+                                </constraints>
+                            </imageView>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Record2" translatesAutoresizingMaskIntoConstraints="NO" id="WAZ-2q-UyH" userLabel="recordingSpinnerInner">
+                                <rect key="frame" x="-0.5" y="145.5" width="375" height="375"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" secondItem="WAZ-2q-UyH" secondAttribute="height" multiplier="1:1" id="LrF-gR-p1M"/>
+                                </constraints>
+                            </imageView>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
-                            <constraint firstItem="72O-zc-b9m" firstAttribute="top" secondItem="XjQ-oD-LJe" secondAttribute="top" constant="44" id="6DH-Up-pPN"/>
+                            <constraint firstItem="2xH-ge-ksx" firstAttribute="width" secondItem="XjQ-oD-LJe" secondAttribute="width" id="5Lv-2Y-Ydb"/>
+                            <constraint firstItem="72O-zc-b9m" firstAttribute="top" secondItem="XjQ-oD-LJe" secondAttribute="top" id="6DH-Up-pPN"/>
                             <constraint firstItem="72O-zc-b9m" firstAttribute="leading" secondItem="zTe-Q8-MBl" secondAttribute="leading" id="8go-ud-m3N"/>
-                            <constraint firstItem="72O-zc-b9m" firstAttribute="bottom" secondItem="zTe-Q8-MBl" secondAttribute="bottom" constant="44" id="C1B-I7-Ycb"/>
+                            <constraint firstItem="72O-zc-b9m" firstAttribute="bottom" secondItem="XjQ-oD-LJe" secondAttribute="bottom" id="C1B-I7-Ycb"/>
+                            <constraint firstItem="2xH-ge-ksx" firstAttribute="centerX" secondItem="XjQ-oD-LJe" secondAttribute="centerX" id="CX4-iM-75k"/>
                             <constraint firstItem="zTe-Q8-MBl" firstAttribute="trailing" secondItem="72O-zc-b9m" secondAttribute="trailing" id="RaU-6f-Ilh"/>
-                            <constraint firstItem="OJu-oK-EUK" firstAttribute="centerX" secondItem="XjQ-oD-LJe" secondAttribute="centerX" id="d9J-o4-vmX"/>
-                            <constraint firstItem="OJu-oK-EUK" firstAttribute="centerY" secondItem="XjQ-oD-LJe" secondAttribute="centerY" id="nii-QJ-vH4"/>
+                            <constraint firstItem="2xH-ge-ksx" firstAttribute="centerY" secondItem="XjQ-oD-LJe" secondAttribute="centerY" id="TU2-Sf-ZY7"/>
+                            <constraint firstItem="WAZ-2q-UyH" firstAttribute="centerX" secondItem="XjQ-oD-LJe" secondAttribute="centerX" id="iTT-D2-VOk"/>
+                            <constraint firstItem="WAZ-2q-UyH" firstAttribute="width" secondItem="XjQ-oD-LJe" secondAttribute="width" id="jlq-rY-Br1"/>
+                            <constraint firstItem="WAZ-2q-UyH" firstAttribute="centerY" secondItem="XjQ-oD-LJe" secondAttribute="centerY" id="sTI-M0-osk"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="zTe-Q8-MBl"/>
                     </view>
                     <tabBarItem key="tabBarItem" title="CustomCamera" image="Camera" id="1JD-Rd-oNg"/>
                     <connections>
                         <outlet property="camPreview" destination="72O-zc-b9m" id="A6d-0a-DTq"/>
-                        <outlet property="cameraButton" destination="OJu-oK-EUK" id="tZ6-LU-gc3"/>
+                        <outlet property="recordingSpinner" destination="2xH-ge-ksx" id="DwI-T8-7IZ"/>
+                        <outlet property="recordingSpinnerInner" destination="WAZ-2q-UyH" id="yu4-EX-Fth"/>
                         <segue destination="6Ix-Be-c4P" kind="show" identifier="TrimFootage_Segue" id="z9S-f3-xRp"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="5C6-Wz-jsk" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="629.60000000000002" y="320.68965517241384"/>
+            <point key="canvasLocation" x="514" y="665"/>
         </scene>
         <!--Trim Footage View Controller-->
         <scene sceneID="I9K-HH-1ax">
@@ -83,26 +93,40 @@
                                 </items>
                             </navigationBar>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="wRl-aF-BLV" customClass="PlayerView" customModule="SweatNet" customModuleProvider="target">
-                                <rect key="frame" x="62.5" y="83.5" width="250" height="250"/>
+                                <rect key="frame" x="0.0" y="64" width="375" height="508"/>
                                 <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="250" id="KZR-3T-dJP"/>
-                                    <constraint firstAttribute="width" secondItem="wRl-aF-BLV" secondAttribute="height" multiplier="1:1" id="x35-OJ-huq"/>
-                                </constraints>
                             </view>
-                            <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="TJS-cq-dUn" customClass="TrimmerView" customModule="SweatNet" customModuleProvider="target">
-                                <rect key="frame" x="67" y="373" width="240" height="60"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="fD5-rR-xNX">
+                                <rect key="frame" x="0.0" y="637" width="46" height="30"/>
+                                <state key="normal" title="Import"/>
+                                <connections>
+                                    <action selector="importButtonPressed:" destination="6Ix-Be-c4P" eventType="touchUpInside" id="7xt-PZ-BE3"/>
+                                </connections>
+                            </button>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="TJS-cq-dUn" customClass="TrimmerView" customModule="SweatNet" customModuleProvider="target">
+                                <rect key="frame" x="20" y="597" width="335" height="60"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="60" id="eYd-vM-Md0"/>
+                                </constraints>
                             </view>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
                             <constraint firstItem="7RY-QN-Beo" firstAttribute="top" secondItem="6zO-J0-pLf" secondAttribute="top" id="Ela-lC-QBK"/>
+                            <constraint firstItem="wRl-aF-BLV" firstAttribute="leading" secondItem="7RY-QN-Beo" secondAttribute="leading" id="GMN-JO-JWT"/>
+                            <constraint firstItem="TJS-cq-dUn" firstAttribute="leading" secondItem="7RY-QN-Beo" secondAttribute="leading" constant="20" id="KVX-iK-jL3"/>
                             <constraint firstItem="6zO-J0-pLf" firstAttribute="trailing" secondItem="7RY-QN-Beo" secondAttribute="trailing" id="NM6-4L-s3F"/>
                             <constraint firstItem="wRl-aF-BLV" firstAttribute="centerX" secondItem="hXg-8O-a7u" secondAttribute="centerX" id="O6B-d6-hbo"/>
-                            <constraint firstItem="wRl-aF-BLV" firstAttribute="centerY" secondItem="hXg-8O-a7u" secondAttribute="centerY" constant="-125" id="XKE-bs-DW0"/>
+                            <constraint firstItem="wRl-aF-BLV" firstAttribute="bottom" secondItem="TJS-cq-dUn" secondAttribute="top" constant="-25" id="W7F-Dp-Wjj"/>
+                            <constraint firstItem="wRl-aF-BLV" firstAttribute="top" secondItem="6zO-J0-pLf" secondAttribute="bottom" id="XKE-bs-DW0"/>
+                            <constraint firstItem="7RY-QN-Beo" firstAttribute="trailing" secondItem="TJS-cq-dUn" secondAttribute="trailing" constant="20" id="Zdu-8d-S4U"/>
+                            <constraint firstItem="7RY-QN-Beo" firstAttribute="trailing" secondItem="wRl-aF-BLV" secondAttribute="trailing" id="dOK-4Q-INW"/>
                             <constraint firstItem="6zO-J0-pLf" firstAttribute="leading" secondItem="7RY-QN-Beo" secondAttribute="leading" id="uw8-0A-HGO"/>
+                            <constraint firstItem="fD5-rR-xNX" firstAttribute="bottom" secondItem="7RY-QN-Beo" secondAttribute="bottom" id="y29-SF-8JR"/>
+                            <constraint firstItem="7RY-QN-Beo" firstAttribute="bottom" secondItem="TJS-cq-dUn" secondAttribute="bottom" constant="10" id="y6M-kd-xh0"/>
+                            <constraint firstItem="7RY-QN-Beo" firstAttribute="leading" secondItem="fD5-rR-xNX" secondAttribute="leading" id="yAK-2K-B9L"/>
+                            <constraint firstItem="fD5-rR-xNX" firstAttribute="leading" secondItem="7RY-QN-Beo" secondAttribute="leading" id="yyL-rr-2wW"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="7RY-QN-Beo"/>
                     </view>
@@ -206,7 +230,7 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="8Um-LL-8yV" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <exit id="AQ6-NO-9KZ" userLabel="Exit" sceneMemberID="exit"/>
             </objects>
-            <point key="canvasLocation" x="2416.8000000000002" y="320.68965517241384"/>
+            <point key="canvasLocation" x="2409" y="321"/>
         </scene>
         <!--Main Tab Bar Controller-->
         <scene sceneID="NrJ-Wx-vnE">
@@ -241,6 +265,7 @@
         <image name="Camera" width="30" height="30"/>
         <image name="Collection" width="30" height="29"/>
         <image name="Play Triangle" width="110" height="110"/>
-        <image name="Record" width="298" height="298"/>
+        <image name="Record" width="685" height="685"/>
+        <image name="Record2" width="685" height="685"/>
     </resources>
 </document>

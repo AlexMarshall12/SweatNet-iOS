@@ -12,26 +12,26 @@ import FirebaseStorage
 extension StorageReference {
     static let dateFormatter = ISO8601DateFormatter()
     
-    static func newPostImageReference() -> StorageReference {
+    static func postImageReference(timeStamp: Date) -> StorageReference {
         let uid = User.current.uid
-        let timestamp = dateFormatter.string(from: Date())
+        let timestamp = dateFormatter.string(from: timeStamp)
         
         return Storage.storage().reference().child("images/posts/\(uid)/\(timestamp).jpg")
     }
-    static func newPostVideoReference() -> StorageReference {
+    static func postVideoReference(timeStamp: Date) -> StorageReference {
         let uid = User.current.uid
-        let timestamp = dateFormatter.string(from: Date())
+        let timestamp = dateFormatter.string(from: timeStamp)
         
         return Storage.storage().reference().child("videos/posts/\(uid)/\(timestamp).mov")
     }
-    static func newThumbnailImageReference() -> StorageReference {
+    static func postThumbnailReference(timeStamp: Date) -> StorageReference {
         let uid = User.current.uid
-        let timestamp = dateFormatter.string(from: Date())
+        let timestamp = dateFormatter.string(from: timeStamp)
         
         return Storage.storage().reference().child("thumbnails/posts/\(uid)/\(timestamp).jpg")
     }
-    static func thumnailImageReference(title:String) -> StorageReference {
+    static func tagThumbnailReference(title:String) -> StorageReference {
         let uid = User.current.uid
-        return Storage.storage().reference().child("thumbnails/posts/\(uid)/\(title).jpg")
+        return Storage.storage().reference().child("thumbnails/tags/\(uid)/\(title).jpg")
     }
 }

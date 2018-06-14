@@ -12,16 +12,20 @@ import Kingfisher
 private var reuseIdentifier = "TagCell"
 
 class HomeViewController: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource {
-    var tags = [Tag2]()
+    var tags = [Tag]()
+    var tagTitle: String?
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        UserService2.tags(for: User2.current) { (tags) in
-            print(tags)
+        // Do any additional setup after loading the view.
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(false)
+        UserService.tags(for: User.current) { (tags) in
             self.tags = tags
             self.collectionView.reloadData()
         }
-        // Do any additional setup after loading the view.
     }
     
     @IBOutlet var collectionView: UICollectionView!
@@ -37,7 +41,6 @@ class HomeViewController: UIViewController, UICollectionViewDelegate, UICollecti
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         // #warning Incomplete implementation, return the number of items
-        print(tags.count)
         return tags.count
     }
     
@@ -60,9 +63,16 @@ class HomeViewController: UIViewController, UICollectionViewDelegate, UICollecti
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        print(indexPath)
-        print(indexPath.row)
+        let tag = tags[indexPath.item]
+        self.tagTitle = tag.title
         self.performSegue(withIdentifier: "viewTagPosts", sender: nil)
+    }
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if segue.identifier == "viewTagPosts" {
+            let destination = segue.destination as! TagViewController
+            destination.tagTitle = self.tagTitle
+        }
     }
     
     @IBAction func unwindToHome(sender: UIStoryboardSegue) {

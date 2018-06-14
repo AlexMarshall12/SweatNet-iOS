@@ -16,18 +16,19 @@ class CreatePostViewController: UIViewController,UITextViewDelegate,UITextFieldD
     @IBOutlet weak var mySearchTextField: SearchTextField!
     
     var thumbnailImage: UIImage?
+    var postDate: Date?
     var screenshotOut: UIImage?
     var videoURL: URL?
-    var tags = [Tag2]()
+    var tags = [Tag]()
     var selectedTagID: String?
     var selectedTagTitle: String?
     var filter_items = [SearchTextFieldItem]()
-    var post: Post2?
+    var post: Post?
 
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        UserService2.tags(for: User2.current) { (tags) in
+        UserService.tags(for: User.current) { (tags) in
             for tag in tags{
                 self.filter_items.append(SearchTextFieldItem(title: tag.title, subtitle: tag.id,image: UIImage(named: "Camera")))
             }
@@ -47,22 +48,20 @@ class CreatePostViewController: UIViewController,UITextViewDelegate,UITextFieldD
             // Do whatever you want with the picked item
             self.selectedTagID = item.subtitle
             self.selectedTagTitle = item.title
-            print(self.selectedTagID!)
         }
         
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "goToCamera" {
-            //Note uploadThumbnail calls create or update tag as needed with new url. 
-            TagService2.uploadThumbnail(title: mySearchTextField.text!, latestThumbnailImage: self.thumbnailImage!)
-            
+
             //Let post service know what tag to add to the post itself.
             let tagTitle = mySearchTextField.text!
+            print(self.postDate!,"creationDate")
             if MyVariables.isScreenshot == true {
-                PostService.createImagePost(image: self.screenshotOut!, tagTitle: tagTitle, notes: addNotesTextView.text ?? "")
+                PostService.createImagePost(image: self.screenshotOut!, timeStamp: self.postDate!, tagTitle: tagTitle, notes: addNotesTextView.text ?? "")
             } else {
-                PostService.createVideoPost(video: self.videoURL!, tagTitle: tagTitle, notes: addNotesTextView.text ?? "")
+                PostService.createVideoPost(video: self.videoURL!, timeStamp: self.postDate!, thumbnailImage: self.thumbnailImage!, tagTitle: tagTitle, notes: addNotesTextView.text ?? "")
             }
         }
     }

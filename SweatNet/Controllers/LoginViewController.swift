@@ -59,17 +59,20 @@ extension LoginViewController: FUIAuthDelegate {
             assertionFailure("Error signing in: \(error.localizedDescription)")
             return
         }
-        
+        print("login delegate")
         // 1
         guard let user = user
             else { return }
         
+        print("found percy")
+        print(user.uid)
+        
         // 2
-        UserService2.show(forUID: user.uid) { (user) in
-            print("user show")
+        UserService.show(forUID: user.uid) { (user) in
+            print("heres percy I hope")
             if let user = user {
                 // handle existing user
-                User2.setCurrent(user,writeToUserDefaults: true)
+                User.setCurrent(user,writeToUserDefaults: true)
                 
                 let initialViewController = UIStoryboard.initialViewController(for: .main)
                 self.view.window?.rootViewController = initialViewController

@@ -1,51 +1,57 @@
 //
-//  TagService.swift
+//  TagServiceFirestore.swift
 //  SweatNet
 //
-//  Created by Alex on 4/23/18.
+//  Created by Alex on 5/8/18.
 //  Copyright © 2018 SweatNet. All rights reserved.
 //
 
 import Foundation
-import FirebaseDatabase
+import FirebaseFirestore
 import FirebaseStorage
 import UIKit
 
-struct TagServiceBack {
-
-    static func ifTagExists(id:String,title:String,latestThumbnailImage:UIImage,latestUpdate:UInt64){
+struct TagService {
+    
+    static func ifTagExists(title:String,thumbnailURL:String){
         let currentUser = User.current
-        let ref = Database.database().reference().child("tags").child(currentUser.uid)
-        ref.observeSingleEvent(of: .value, with: { (snapshot) in
-            if snapshot.hasChild(id){
-                print("tag exists")
-                uploadThumbnail(image: latestThumbnailImage, title: title, latestUpdate: latestUpdate)
-                //update tag
+        let docRef = Firestore.firestore().collection("users").document(currentUser.uid).collection("tags").document(title)
+        docRef.getDocument { (document, error) in
+            if let document = document, document.exists {
+                //update Tag
+                updateTag(title: title, thumbnailURL: thumbnailURL)
             } else {
-                print("tag does not exist")
-                uploadThumbnail(image: latestThumbnailImage,title:title,latestUpdate:latestUpdate)
-                //let tag = Tag(title:title,latestThumbnailURL:thumbnailURL,latestUpdate:latestUpdate)
-                //let dict = tag.dictValue
-                //ref.updateChildValues(dict)
+                createTag(title: title, thumbnailURL: thumbnailURL)
             }
-        })
-    }
-    static func uploadThumbnail(image: UIImage,title:String,latestUpdate:UInt64) -> Void {
-        let thumbnailRef = StorageReference.newThumbnailImageReference()
-        StorageService.uploadImage(image, at: thumbnailRef) { (downloadURL) in
-            guard let downloadURL = downloadURL else {
-                return
-            }
-            let urlString = downloadURL.absoluteString
-            createTag(latestThumbnailURL: urlString,title: title,latestUpdate: latestUpdate)
         }
     }
-    static func createTag(latestThumbnailURL:String,title: String,latestUpdate:UInt64) {
+    
+    static func updateTag(title: String, thumbnailURL: String) {
         let currentUser = User.current
-        let ref = Database.database().reference().child("tags").child(currentUser.uid).childByAutoId()
-        let tag = Tag(title:title,latestThumbnailURL:latestThumbnailURL,latestUpdate:latestUpdate)
-        let dict = tag.dictValue
-        ref.updateChildValues(dict)
+        let docRef = Firestore.firestore().collection("users").document(currentUser.uid).collection("tags").document(title)
+        docRef.updateData([
+            "latestUpdate": Date(),
+            "latestThumbnailURL": thumbnailURL
+        ]) { err in
+            if let err = err {
+                print("Error updating document: \(err)")
+            } else {
+                print("Document successfully updated")
+            }
+        }
     }
-
+    static func createTag(title: String,thumbnailURL:String) {
+        let currentUser = User.current
+        let docRef = Firestore.firestore().collection("users").document(currentUser.uid).collection("tags").document(title)
+        let tag = Tag(title: title,latestThumbnailURL: thumbnailURL, latestUpdate: Date())
+        docRef.setData(tag.dictValue) { err in
+            if let err = err {
+                print("Error writing document: \(err)")
+            } else {
+                print("Document successfully written!")
+            }
+        }
+    }
+    
 }
+

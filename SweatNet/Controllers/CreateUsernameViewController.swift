@@ -37,11 +37,10 @@ class CreateUsernameViewController: UIViewController {
             let username = usernameTextField.text,
             !username.isEmpty else { return }
         
-        UserService2.create(firUser, username: username) { (user) in
+        UserService.create(firUser, username: username) { (user) in
             print("successfully created user")
             guard let user = user else { return }
-            print(user)
-            User2.setCurrent(user,writeToUserDefaults: true)
+            User.setCurrent(user,writeToUserDefaults: true)
             let initialViewController = UIStoryboard.initialViewController(for: .main)
             self.view.window?.rootViewController = initialViewController
             self.view.window?.makeKeyAndVisible()

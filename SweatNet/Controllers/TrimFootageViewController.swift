@@ -9,10 +9,12 @@
 import UIKit
 import AVFoundation
 import os.log
+import MobileCoreServices
+import Photos
 
+class TrimFootageViewController: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+    let imagePicker = UIImagePickerController()
 
-class TrimFootageViewController: UIViewController {
-    
     @objc let player = AVPlayer()
     static let assetKeysRequiredToPlay = [
         "playable",
@@ -55,7 +57,8 @@ class TrimFootageViewController: UIViewController {
     var playbackTimeCheckerTimer: Timer?
     
     var footageURL: URL?
-    var videoURL:URL?
+    var videoURL: URL?
+    var mediaDate: Date?
     var screenshotOut:UIImage?
     var thumbnailImage:UIImage?
 
@@ -71,14 +74,14 @@ class TrimFootageViewController: UIViewController {
             player.replaceCurrentItem(with: self.playerItem)
         }
     }
-    override func viewWillAppear(_ animated: Bool) {
+    override func viewDidAppear(_ animated: Bool) {
         
         //addObserver(self, forKeyPath: #keyPath(ViewController.player.currentItem.duration), options: [.new, .initial], context: &playerViewControllerKVOContext)
         //addObserver(self, forKeyPath: #keyPath(ViewController.player.currentItem.status), options: [.new, .initial], context: &playerViewControllerKVOContext)
         
         playerView.playerLayer.player = player
         
-        super.viewWillAppear(animated)
+        super.viewDidAppear(animated)
         guard let footageURL = self.footageURL else {return}
         asset = AVURLAsset(url: footageURL, options: nil)
     }
@@ -87,6 +90,7 @@ class TrimFootageViewController: UIViewController {
         player.pause()
     }
     override func viewDidLoad() {
+        imagePicker.delegate = self
         super.viewDidLoad()
     }
     func asynchronouslyLoadURLAsset(_ newAsset: AVURLAsset) {
@@ -141,6 +145,7 @@ class TrimFootageViewController: UIViewController {
                  it our player's current item.
                  */
                 self.playerItem = AVPlayerItem(asset: newAsset)
+                print("loaded item")
             }
         }
     }
@@ -285,7 +290,7 @@ class TrimFootageViewController: UIViewController {
             return
         }
         self.screenshotOut = imageFromVideo(url: footageURL!, time: currentTime )
-        self.thumbnailImage = self.screenshotOut
+        //self.thumbnailImage = self.screenshotOut
         DispatchQueue.main.async {
             self.performSegue(withIdentifier: "CreatePost_Segue", sender: nil)
         }
@@ -301,7 +306,7 @@ class TrimFootageViewController: UIViewController {
         guard let VideoURL = self.videoURL else { return }
         self.thumbnailImage = setThumbnailFrom(path: VideoURL)
         DispatchQueue.main.async {
-        
+          print("Dispatching")
           self.performSegue(withIdentifier: "CreatePost_Segue", sender: nil)
         }
     }
@@ -309,14 +314,95 @@ class TrimFootageViewController: UIViewController {
     @IBAction func nextButtonPressed(_ sender: Any) {
 
         if MyVariables.isScreenshot == true {
+            print("is screenshot")
             prepareScreenshot()
         } else {
+            print("isn't screenshot")
             prepareVideo()
         }
     }
     
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?){
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
+        //dismiss(animated: true, completion: nil)
+        guard info[UIImagePickerControllerMediaType] != nil else { return }
+        let mediaType = info[UIImagePickerControllerMediaType] as! CFString
+        print("video is",mediaType)
+        switch mediaType {
+        case kUTTypeImage:
+            if let pickedImage = info[UIImagePickerControllerOriginalImage] as? UIImage, let pickedAsset = info[UIImagePickerControllerPHAsset] as? PHAsset {
+                self.screenshotOut = pickedImage
+                MyVariables.isScreenshot = true
+                self.thumbnailImage = pickedImage
+                let creationDate = pickedAsset.creationDate
+                self.mediaDate = creationDate
+                dismiss(animated: true, completion: nil)
+                
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5)  {
+                    
+                    self.performSegue(withIdentifier: "CreatePost_Segue", sender: nil)
+                    
+                }
+
+            }
+            break
+        case kUTTypeMovie:
+            if let videoURL = info[UIImagePickerControllerMediaURL] as? URL,let pickedAsset = info[UIImagePickerControllerPHAsset] as? PHAsset {
+                print("KUMOVIE")
+                MyVariables.isScreenshot = false
+                let creationDate = pickedAsset.creationDate
+                print(creationDate,"creationDate")
+                asset = AVURLAsset(url: videoURL, options: nil)
+                self.footageURL = videoURL
+                self.mediaDate = creationDate
+                self.thumbnailImage = setThumbnailFrom(path: videoURL)
+                DispatchQueue.main.async {
+                    self.performSegue(withIdentifier: "CreatePost_Segue", sender: nil)
+                }
+                self.videoURL = videoURL
+                dismiss(animated: true, completion: nil)
+
+            }
+            break
+        case kUTTypeLivePhoto:
+            print("livePhoto")
+            dismiss(animated: true, completion: nil)
+
+            break
+        default:
+            dismiss(animated: false, completion: nil)
+
+            print("something else")
+            break
+        }
+    }
+    
+    func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
+        dismiss(animated: true, completion: nil)
+    }
+    @IBAction func importButtonPressed(_ sender: Any) {
+        PHPhotoLibrary.requestAuthorization({status in
+            switch status {
+            case .authorized:
+                self.imagePicker.sourceType = .photoLibrary
+                self.imagePicker.allowsEditing = true
+                self.imagePicker.mediaTypes = [kUTTypeMovie as String, kUTTypeImage as String]
+                
+                self.present(self.imagePicker,animated: true, completion: nil)
+            case .denied:
+                print("denied")
+            // probably alert the user that they need to grant photo access
+            case .notDetermined:
+                print("not determined")
+            case .restricted:
+                print("restricted")
+                // probably alert the user that photo access is restricted
+            }
+        })
         
+    }
+    
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?){
         if segue.identifier == "CreatePost_Segue" {
             guard self.thumbnailImage != nil else {
                 return
@@ -334,10 +420,12 @@ class TrimFootageViewController: UIViewController {
                 //now I set those three varibles?
             }
             let controller = segue.destination as! CreatePostViewController
-
+            controller.postDate = mediaDate
             controller.thumbnailImage = thumbnailImage
             controller.videoURL = videoURL
             controller.screenshotOut = screenshotOut
+            print("segued",MyVariables.isScreenshot)
+
         }
     }
     

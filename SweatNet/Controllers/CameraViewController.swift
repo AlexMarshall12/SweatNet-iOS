@@ -12,26 +12,62 @@ import UIKit
 var captureSession: AVCaptureSession?
 var videoPreviewLayer: AVCaptureVideoPreviewLayer?
 
-class CameraViewController: UIViewController {
+class CameraViewController: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     
     let captureSession = AVCaptureSession()
     let movieOutput = AVCaptureMovieFileOutput()
     var previewLayer: AVCaptureVideoPreviewLayer!
     var activeInput: AVCaptureDeviceInput!
     var footageURL: URL?
+    //private var animator: UIViewPropertyAnimator?
+    private lazy var animator: UIDynamicAnimator = UIDynamicAnimator(referenceView: view)
+    private var rotate: UIDynamicItemBehavior?
+    private var rotate2: UIDynamicItemBehavior?
 
+    @IBOutlet weak var recordingSpinnerInner: UIImageView!
+    @IBOutlet weak var recordingSpinner: UIImageView!
+    @IBOutlet weak var importMediaButton: UIButton!
     @IBOutlet weak var camPreview: UIView!
-    @IBOutlet weak var cameraButton: UIButton!
-    @IBAction func cameraButton_TouchUpInside(_ sender: Any) {
-        startRecording()
-    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+        self.recordingSpinner.isUserInteractionEnabled = true
+        let tap = UITapGestureRecognizer(target: self, action: #selector(handleTap))
+        self.recordingSpinner.addGestureRecognizer(tap)
         if setupSession(){
             setupPreview()
             startSession()
+        }
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        self.navigationController?.navigationBar.backgroundColor = UIColor(red: 1.0, green: 0.0, blue: 0.0, alpha: 0.5)
+    }
+    
+    
+    @objc func handleTap(_ gesture:UITapGestureRecognizer) {
+//        if animator == nil {
+//            createAnimation()
+//        }
+        startRecording()
+        
+        if let rotate = rotate, let rotate2 = rotate2 {
+            animator.removeBehavior(rotate)
+            animator.removeBehavior(rotate2)
+            self.rotate = nil
+            self.rotate2 = nil
+        } else {
+            rotate = UIDynamicItemBehavior(items: [self.recordingSpinner])
+            rotate2 = UIDynamicItemBehavior(items: [self.recordingSpinnerInner])
+            rotate?.allowsRotation = true
+            rotate2?.allowsRotation = true
+            rotate?.angularResistance = 0
+            rotate2?.angularResistance = 0
+            rotate?.addAngularVelocity(1, for: self.recordingSpinner)
+            rotate2?.addAngularVelocity(-1, for: self.recordingSpinnerInner)
+            animator.addBehavior(rotate!)
+            animator.addBehavior(rotate2!)
         }
     }
     
@@ -42,7 +78,24 @@ class CameraViewController: UIViewController {
         previewLayer.videoGravity = AVLayerVideoGravity.resizeAspectFill
         camPreview.layer.addSublayer(previewLayer)
     }
-    
+//    private func createAnimation() {
+//        animator = UIViewPropertyAnimator.runningPropertyAnimator(withDuration: 4, delay: 0, options: [.curveLinear,.allowUserInteraction], animations: {
+//            UIView.animateKeyframes(withDuration: 4, delay: 0, animations: {
+//                UIView.addKeyframe(withRelativeStartTime: 0, relativeDuration: 1.0 / 3.0) {
+//                    self.recordingSpinner.transform = .init(rotationAngle: .pi * 2 * 1 / 3)
+//                }
+//                UIView.addKeyframe(withRelativeStartTime: 1.0 / 3.0, relativeDuration: 1.0 / 3.0) {
+//                    self.recordingSpinner.transform = .init(rotationAngle: .pi * 2 * 2 / 3)
+//                }
+//                UIView.addKeyframe(withRelativeStartTime: 2.0 / 3.0, relativeDuration: 1.0 / 3.0) {
+//                    self.recordingSpinner.transform = .identity
+//                }
+//            })
+//        }, completion: { [weak self] _ in
+//            self?.createAnimation()
+//        })
+//    }
+
     //MARK:- Setup Camera
     
     func setupSession() -> Bool {
@@ -132,14 +185,11 @@ class CameraViewController: UIViewController {
         return orientation
     }
     
-    func startCapture() {
-        return startRecording()
-    }
-    
     func startRecording() {
         
         if movieOutput.isRecording == false {
             
+            //animator?.startAnimation()
             let connection = movieOutput.connection(with: AVMediaType.video)
             if (connection?.isVideoOrientationSupported)! {
                 connection?.videoOrientation = currentVideoOrientation()
@@ -169,17 +219,19 @@ class CameraViewController: UIViewController {
         else {
             stopRecording()
         }
-        
     }
     
     func stopRecording() {
         if movieOutput.isRecording == true {
+            //animator?.pauseAnimation()
             movieOutput.stopRecording()
         }
     }
+    
     @IBAction func unwindToCamera(sender: UIStoryboardSegue) {
     }
-
+    
+    
 }
 extension CameraViewController: AVCaptureFileOutputRecordingDelegate{
     func fileOutput(_ output: AVCaptureFileOutput, didFinishRecordingTo outputFileURL: URL, from connections: [AVCaptureConnection], error: Error?) {

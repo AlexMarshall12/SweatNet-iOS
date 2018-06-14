@@ -1,5 +1,5 @@
 //
-//  Tag2.swift
+//  Tag.swift
 //  SweatNet
 //
 //  Created by Alex on 5/8/18.

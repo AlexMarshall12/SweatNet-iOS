@@ -1,5 +1,5 @@
 //
-//  User2.swift
+//  User.swift
 //  SweatNet
 //
 //  Created by Alex on 5/8/18.
@@ -18,11 +18,11 @@ class User: NSObject {
     // MARK: - Singleton
     
     // 1
-    private static var _current: User2?
+    private static var _current: User?
     
     // 2
-    static var current: User2 {
-        // 3
+    static var current: User {
+        
         guard let currentUser = _current else {
             fatalError("Error: current user doesn't exist")
         }
@@ -34,7 +34,7 @@ class User: NSObject {
     // MARK: - Class Methods
     
     // 5
-    static func setCurrent(_ user: User2,writeToUserDefaults: Bool = false) {
+    static func setCurrent(_ user: User,writeToUserDefaults: Bool = false) {
         if writeToUserDefaults {
             // 3
             let data = NSKeyedArchiver.archivedData(withRootObject: user)
@@ -75,7 +75,7 @@ class User: NSObject {
         super.init()
     }
     var dictValue: [String: Any] {
-        return ["username": username]
+        return ["uid":uid ,"username": username]
     }
 }
 
