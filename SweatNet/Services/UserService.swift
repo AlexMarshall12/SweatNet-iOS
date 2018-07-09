@@ -15,6 +15,7 @@
 //
 
 import Foundation
+import UIKit
 import FirebaseFirestore
 
 struct UserService {
@@ -61,8 +62,6 @@ struct UserService {
                 var posts = [Post]()
                 var postIds = [String]()
                 for document in querySnapshot!.documents {
-                    print("OMG")
-                    print("OMG",document.data())
                     let post = Post(mediaURL: document.data()["mediaURL"] as! String, tagDict: document.data()["tags"] as! [String:UInt64], notes: document.data()["notes"] as! String, timeStamp: document.data()["timeStamp"] as! Date, isVideo: document.data()["isVideo"] as! Bool, thumbnailURL: document.data()["thumbnailURL"] as! String)
                     postIds.append(document.documentID)
                     posts.append(post)
@@ -80,7 +79,7 @@ struct UserService {
             } else {
                 var tags = [Tag]()
                 for document in querySnapshot!.documents {
-                    let tag = Tag(title: document.data()["title"] as! String, latestThumbnailURL: document.data()["latestThumbnailURL"] as! String, latestUpdate: document.data()["latestUpdate"] as! Date)
+                    let tag = Tag(title: document.data()["title"] as! String, latestThumbnailURL: document.data()["latestThumbnailURL"] as! String, latestUpdate: document.data()["latestUpdate"] as! Date, color: document.data()["color"] as! [CGFloat])
                     tags.append(tag)
                 }
                 completion(tags)

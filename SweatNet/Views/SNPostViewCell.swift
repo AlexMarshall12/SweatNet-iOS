@@ -10,15 +10,30 @@ import UIKit
 import AVKit
 import AVFoundation
 
+struct cellPostAttributes {
+    let ID: String?
+    let notes: String?
+    let postDate: Date?
+    let tags: [String:UIColor]?
+}
+
 class SNPostViewCell: UICollectionViewCell, UITextViewDelegate {
     var isVideo: Bool?
-    let videoExtensions = ["mov"]
-
-    var delegate: SNPostViewCellDelegate?
-    
-    func textViewDidEndEditing(_ textView: UITextView) {
-        self.delegate?.myCustomCellDidUpdate(cell: self, newContent: textView.text)
+    var postId: String?
+    var tagColorsDict: [String:UIColor]? {
+        didSet {
+            for (tag,color) in tagColorsDict! {
+                let token = KSToken(title: tag)
+                token.tokenBackgroundColor = color
+                tagsView.addToken(token)
+            }
+        }
     }
+    let videoExtensions = ["mov"]
+    var thisPost:cellPostAttributes?
+    
+    @IBOutlet weak var tagsView: KSTokenView!
+    var delegate: SNPostViewCellDelegate?
 
     @IBOutlet weak var notesToBottomContraint: NSLayoutConstraint!
     @IBOutlet weak var thumbnail: UIImageView!
@@ -26,6 +41,10 @@ class SNPostViewCell: UICollectionViewCell, UITextViewDelegate {
     @IBAction func playButtonPressed(_ sender: Any) {
         self.delegate?.playButtonPressed(playbackURL: mediaURL)
     }
+    @IBAction func editButtonPressed(_ sender: Any) {
+        self.delegate?.editButtonPressed(postID: thisPost?.ID, notes: thisPost?.notes, postDate: thisPost?.postDate, tags: thisPost?.tags)
+    }
+    
     var mediaURL: URL? {
         didSet {
             if self.isVideo == true {
@@ -47,9 +66,12 @@ class SNPostViewCell: UICollectionViewCell, UITextViewDelegate {
     
     @IBOutlet weak var playButton: UIButton!
     @IBOutlet weak var timeStampLabel: UILabel!
-
+    
+    override func prepareForReuse() {
+        tagsView.deleteAllTokens()
+    }
 }
 protocol SNPostViewCellDelegate {
-    func myCustomCellDidUpdate(cell: SNPostViewCell, newContent: String)
     func playButtonPressed(playbackURL: URL?)
+    func editButtonPressed(postID: String?, notes: String?, postDate: Date?,tags: [String:UIColor]?)
 }

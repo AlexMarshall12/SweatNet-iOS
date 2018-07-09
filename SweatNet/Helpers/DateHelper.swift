@@ -59,4 +59,12 @@ extension Date {
         if nanoseconds(from: date) > 0 { return "\(nanoseconds(from: date))ns" }
         return ""
     }
+    func isInSameMonth(date: Date) -> Bool {
+        return Calendar.current.isDate(self, equalTo: date, toGranularity: .month)
+    }
+    func isInSameYear(date: Date) -> Bool {
+        return Calendar.current.isDate(self, equalTo: date, toGranularity: .year)
+    }
 }
+
+

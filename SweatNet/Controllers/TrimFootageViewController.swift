@@ -290,7 +290,7 @@ class TrimFootageViewController: UIViewController, UIImagePickerControllerDelega
             return
         }
         self.screenshotOut = imageFromVideo(url: footageURL!, time: currentTime )
-        //self.thumbnailImage = self.screenshotOut
+        self.thumbnailImage = self.screenshotOut
         DispatchQueue.main.async {
             self.performSegue(withIdentifier: "CreatePost_Segue", sender: nil)
         }
@@ -342,7 +342,6 @@ class TrimFootageViewController: UIViewController, UIImagePickerControllerDelega
                     self.performSegue(withIdentifier: "CreatePost_Segue", sender: nil)
                     
                 }
-
             }
             break
         case kUTTypeMovie:
@@ -350,7 +349,6 @@ class TrimFootageViewController: UIViewController, UIImagePickerControllerDelega
                 print("KUMOVIE")
                 MyVariables.isScreenshot = false
                 let creationDate = pickedAsset.creationDate
-                print(creationDate,"creationDate")
                 asset = AVURLAsset(url: videoURL, options: nil)
                 self.footageURL = videoURL
                 self.mediaDate = creationDate
@@ -360,7 +358,6 @@ class TrimFootageViewController: UIViewController, UIImagePickerControllerDelega
                 }
                 self.videoURL = videoURL
                 dismiss(animated: true, completion: nil)
-
             }
             break
         case kUTTypeLivePhoto:
@@ -401,10 +398,10 @@ class TrimFootageViewController: UIViewController, UIImagePickerControllerDelega
         
     }
     
-    
     override func prepare(for segue: UIStoryboardSegue, sender: Any?){
         if segue.identifier == "CreatePost_Segue" {
             guard self.thumbnailImage != nil else {
+                print(self.thumbnailImage,"thumbnailll")
                 return
             }
             if MyVariables.isScreenshot == true {

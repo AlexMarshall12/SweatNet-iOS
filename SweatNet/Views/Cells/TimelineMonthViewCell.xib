@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="14113" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina4_7" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14088"/>
+        <capability name="Alignment constraints with different attributes" minToolsVersion="5.1"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <collectionViewCell opaque="NO" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="TimelineMonthViewCell" id="gTV-IL-0wX" userLabel="Timeline Month View Cell" customClass="TimelineMonthViewCell" customModule="SweatNet" customModuleProvider="target">
+            <rect key="frame" x="0.0" y="0.0" width="50" height="50"/>
+            <autoresizingMask key="autoresizingMask"/>
+            <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
+                <rect key="frame" x="0.0" y="0.0" width="50" height="50"/>
+                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                <subviews>
+                    <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" translatesAutoresizingMaskIntoConstraints="NO" id="zm5-J1-JuI">
+                        <rect key="frame" x="0.0" y="25" width="50" height="15"/>
+                    </stackView>
+                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="MXv-7r-iWo" userLabel="Line">
+                        <rect key="frame" x="0.0" y="24" width="50" height="1"/>
+                        <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <constraints>
+                            <constraint firstAttribute="height" constant="1" id="alE-7F-13o"/>
+                        </constraints>
+                    </view>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="F8n-Dv-ihs">
+                        <rect key="frame" x="0.0" y="3" width="50" height="21"/>
+                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                        <nil key="textColor"/>
+                        <nil key="highlightedColor"/>
+                    </label>
+                    <label hidden="YES" opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Q30-Uo-vhY" userLabel="yearLabel">
+                        <rect key="frame" x="2" y="0.0" width="50" height="10"/>
+                        <constraints>
+                            <constraint firstAttribute="height" constant="10" id="BbG-ta-FuI"/>
+                            <constraint firstAttribute="width" constant="50" id="wND-ha-IqC"/>
+                        </constraints>
+                        <fontDescription key="fontDescription" type="system" pointSize="9"/>
+                        <nil key="textColor"/>
+                        <nil key="highlightedColor"/>
+                    </label>
+                    <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="bdZ-6f-VTv" userLabel="yearLine">
+                        <rect key="frame" x="0.0" y="0.0" width="1" height="24"/>
+                        <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <constraints>
+                            <constraint firstAttribute="width" constant="1" id="tjG-4a-g8h"/>
+                        </constraints>
+                    </view>
+                    <stackView opaque="NO" contentMode="scaleToFill" fixedFrame="YES" distribution="fillEqually" translatesAutoresizingMaskIntoConstraints="NO" id="1oJ-aU-imS" userLabel="Arrow Ticks">
+                        <rect key="frame" x="0.0" y="39" width="50" height="11"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                    </stackView>
+                </subviews>
+            </view>
+            <constraints>
+                <constraint firstItem="Q30-Uo-vhY" firstAttribute="leading" secondItem="ZTg-uK-7eu" secondAttribute="leading" constant="2" id="0NL-ne-k6U"/>
+                <constraint firstItem="zm5-J1-JuI" firstAttribute="width" secondItem="gTV-IL-0wX" secondAttribute="width" id="6YQ-W8-ErS"/>
+                <constraint firstItem="bdZ-6f-VTv" firstAttribute="top" secondItem="ZTg-uK-7eu" secondAttribute="top" id="7CQ-vP-g5M"/>
+                <constraint firstItem="F8n-Dv-ihs" firstAttribute="bottom" secondItem="MXv-7r-iWo" secondAttribute="top" id="B7g-eN-7E5"/>
+                <constraint firstItem="MXv-7r-iWo" firstAttribute="centerX" secondItem="ZTg-uK-7eu" secondAttribute="centerX" id="HsT-I0-md0"/>
+                <constraint firstItem="F8n-Dv-ihs" firstAttribute="width" secondItem="gTV-IL-0wX" secondAttribute="width" id="SId-ts-GPe"/>
+                <constraint firstItem="ZTg-uK-7eu" firstAttribute="bottom" secondItem="zm5-J1-JuI" secondAttribute="bottom" constant="10" id="TJs-Xh-tVd"/>
+                <constraint firstItem="Q30-Uo-vhY" firstAttribute="top" secondItem="ZTg-uK-7eu" secondAttribute="top" id="WJg-ff-Rvp"/>
+                <constraint firstItem="MXv-7r-iWo" firstAttribute="bottom" secondItem="zm5-J1-JuI" secondAttribute="top" id="daf-38-35o"/>
+                <constraint firstItem="zm5-J1-JuI" firstAttribute="top" secondItem="ZTg-uK-7eu" secondAttribute="centerY" id="dvj-Tv-A50"/>
+                <constraint firstItem="F8n-Dv-ihs" firstAttribute="top" secondItem="ZTg-uK-7eu" secondAttribute="top" constant="3" id="hlU-zh-p4N"/>
+                <constraint firstItem="bdZ-6f-VTv" firstAttribute="bottom" secondItem="MXv-7r-iWo" secondAttribute="top" id="j6O-Ng-G2K"/>
+                <constraint firstItem="MXv-7r-iWo" firstAttribute="width" secondItem="gTV-IL-0wX" secondAttribute="width" id="myN-4P-7jn"/>
+                <constraint firstItem="bdZ-6f-VTv" firstAttribute="leading" secondItem="ZTg-uK-7eu" secondAttribute="leading" id="noA-JA-QzH"/>
+                <constraint firstItem="zm5-J1-JuI" firstAttribute="centerX" secondItem="ZTg-uK-7eu" secondAttribute="centerX" id="tOQ-zw-j6Z"/>
+                <constraint firstItem="F8n-Dv-ihs" firstAttribute="centerX" secondItem="ZTg-uK-7eu" secondAttribute="centerX" id="vd3-iT-JLs"/>
+            </constraints>
+            <viewLayoutGuide key="safeArea" id="ZTg-uK-7eu"/>
+            <connections>
+                <outlet property="arrowTicks" destination="1oJ-aU-imS" id="6CJ-MS-zU3"/>
+                <outlet property="dayTicks" destination="zm5-J1-JuI" id="2cm-XN-0p1"/>
+                <outlet property="monthLabel" destination="F8n-Dv-ihs" id="801-HJ-7GB"/>
+                <outlet property="yearLabel" destination="Q30-Uo-vhY" id="OYF-4B-CrL"/>
+                <outlet property="yearLine" destination="bdZ-6f-VTv" id="fVg-mR-4hl"/>
+            </connections>
+        </collectionViewCell>
+    </objects>
+</document>

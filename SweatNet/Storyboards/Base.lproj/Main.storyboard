@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="13771" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="DNx-yF-MRU">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14113" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="DNx-yF-MRU">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="13772"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14088"/>
+        <capability name="Alignment constraints with different attributes" minToolsVersion="5.1"/>
         <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
         <capability name="Constraints with non-1.0 multipliers" minToolsVersion="5.1"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
@@ -24,6 +25,17 @@
                                 <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                                 <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                             </view>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="a2R-am-4Ce" userLabel="ImportButton">
+                                <rect key="frame" x="305" y="5" width="67" height="53"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="67" id="UpC-gx-bma"/>
+                                    <constraint firstAttribute="height" constant="53" id="dcL-mw-Bk8"/>
+                                </constraints>
+                                <state key="normal" title="Button" image="Import Media"/>
+                                <connections>
+                                    <action selector="importButtonPressed:" destination="PRt-op-jWe" eventType="touchUpInside" id="cZc-B6-im0"/>
+                                </connections>
+                            </button>
                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Record" translatesAutoresizingMaskIntoConstraints="NO" id="2xH-ge-ksx" userLabel="recordingSpinner">
                                 <rect key="frame" x="-0.5" y="145.5" width="375" height="375"/>
                                 <constraints>
@@ -46,23 +58,26 @@
                             <constraint firstItem="2xH-ge-ksx" firstAttribute="centerX" secondItem="XjQ-oD-LJe" secondAttribute="centerX" id="CX4-iM-75k"/>
                             <constraint firstItem="zTe-Q8-MBl" firstAttribute="trailing" secondItem="72O-zc-b9m" secondAttribute="trailing" id="RaU-6f-Ilh"/>
                             <constraint firstItem="2xH-ge-ksx" firstAttribute="centerY" secondItem="XjQ-oD-LJe" secondAttribute="centerY" id="TU2-Sf-ZY7"/>
+                            <constraint firstItem="zTe-Q8-MBl" firstAttribute="trailing" secondItem="a2R-am-4Ce" secondAttribute="trailing" constant="3" id="WHu-56-Hny"/>
                             <constraint firstItem="WAZ-2q-UyH" firstAttribute="centerX" secondItem="XjQ-oD-LJe" secondAttribute="centerX" id="iTT-D2-VOk"/>
                             <constraint firstItem="WAZ-2q-UyH" firstAttribute="width" secondItem="XjQ-oD-LJe" secondAttribute="width" id="jlq-rY-Br1"/>
+                            <constraint firstItem="zTe-Q8-MBl" firstAttribute="top" secondItem="a2R-am-4Ce" secondAttribute="top" constant="15" id="nrZ-dr-GW2"/>
                             <constraint firstItem="WAZ-2q-UyH" firstAttribute="centerY" secondItem="XjQ-oD-LJe" secondAttribute="centerY" id="sTI-M0-osk"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="zTe-Q8-MBl"/>
                     </view>
-                    <tabBarItem key="tabBarItem" title="CustomCamera" image="Camera" id="1JD-Rd-oNg"/>
+                    <tabBarItem key="tabBarItem" title="Record" image="Camera" selectedImage="Camera" id="1JD-Rd-oNg"/>
                     <connections>
                         <outlet property="camPreview" destination="72O-zc-b9m" id="A6d-0a-DTq"/>
                         <outlet property="recordingSpinner" destination="2xH-ge-ksx" id="DwI-T8-7IZ"/>
                         <outlet property="recordingSpinnerInner" destination="WAZ-2q-UyH" id="yu4-EX-Fth"/>
                         <segue destination="6Ix-Be-c4P" kind="show" identifier="TrimFootage_Segue" id="z9S-f3-xRp"/>
+                        <segue destination="sZ9-QP-ifp" kind="show" identifier="CreatePostWithImportedMedia" id="i9S-Bq-gU0"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="5C6-Wz-jsk" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="514" y="665"/>
+            <point key="canvasLocation" x="590" y="321"/>
         </scene>
         <!--Trim Footage View Controller-->
         <scene sceneID="I9K-HH-1ax">
@@ -140,7 +155,7 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="c7S-Q5-V6h" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <exit id="GsO-c9-c0a" userLabel="Exit" sceneMemberID="exit"/>
             </objects>
-            <point key="canvasLocation" x="1517.5999999999999" y="320.68965517241384"/>
+            <point key="canvasLocation" x="1513" y="677"/>
         </scene>
         <!--Create Post View Controller-->
         <scene sceneID="6a6-Am-ilR">
@@ -179,58 +194,55 @@
                                 <rect key="frame" x="29" y="228" width="330" height="199"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                <color key="textColor" white="0.66666666669999997" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                 <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
                             </textView>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="yng-YM-sz6" userLabel="Horizontal Line View">
-                                <rect key="frame" x="30" y="224" width="315" height="1"/>
+                                <rect key="frame" x="20" y="224" width="335" height="1"/>
                                 <color key="backgroundColor" white="0.33333333333333331" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <constraints>
-                                    <constraint firstAttribute="width" constant="315" id="7Kt-QI-8Ey"/>
                                     <constraint firstAttribute="height" constant="1" id="kZo-pn-cBi"/>
                                 </constraints>
                             </view>
                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" image="Play Triangle" translatesAutoresizingMaskIntoConstraints="NO" id="EYz-ST-4mp">
                                 <rect key="frame" x="56" y="120" width="46" height="48"/>
                             </imageView>
-                            <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="line" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="c7F-Zu-aHR" customClass="SearchTextField" customModule="SearchTextField">
-                                <rect key="frame" x="130" y="133.5" width="225" height="21"/>
-                                <nil key="textColor"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                <textInputTraits key="textInputTraits"/>
-                            </textField>
+                            <view contentMode="scaleToFill" ambiguous="YES" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="WLu-Kc-ulR" userLabel="Tags View" customClass="KSTokenView" customModule="SweatNet" customModuleProvider="target">
+                                <rect key="frame" x="138" y="126" width="225" height="36"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            </view>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
+                            <constraint firstItem="WLu-Kc-ulR" firstAttribute="trailing" secondItem="Zxc-tK-EON" secondAttribute="trailing" constant="-10" id="DsT-Kt-ESN"/>
                             <constraint firstItem="3F4-IS-BEp" firstAttribute="top" secondItem="tzr-GJ-KKo" secondAttribute="bottom" constant="30" id="Eo0-Lg-jyu"/>
-                            <constraint firstItem="c7F-Zu-aHR" firstAttribute="centerY" secondItem="3F4-IS-BEp" secondAttribute="centerY" id="J35-wz-yHJ"/>
                             <constraint firstItem="EYz-ST-4mp" firstAttribute="centerY" secondItem="3F4-IS-BEp" secondAttribute="centerY" id="LMm-tO-k09"/>
                             <constraint firstItem="tzr-GJ-KKo" firstAttribute="centerX" secondItem="Zxc-tK-EON" secondAttribute="centerX" id="NoT-iD-so6"/>
                             <constraint firstItem="yng-YM-sz6" firstAttribute="top" secondItem="3F4-IS-BEp" secondAttribute="bottom" constant="30" id="VP8-I8-hVl"/>
-                            <constraint firstItem="Zxc-tK-EON" firstAttribute="trailing" secondItem="c7F-Zu-aHR" secondAttribute="trailing" constant="20" id="Z3Y-pf-Znw"/>
-                            <constraint firstItem="c7F-Zu-aHR" firstAttribute="leading" secondItem="3F4-IS-BEp" secondAttribute="trailing" id="bfa-SI-T5w"/>
-                            <constraint firstItem="Zxc-tK-EON" firstAttribute="trailing" secondItem="yng-YM-sz6" secondAttribute="trailing" constant="30" id="dBe-o4-wyr"/>
+                            <constraint firstItem="Zxc-tK-EON" firstAttribute="trailing" secondItem="yng-YM-sz6" secondAttribute="trailing" constant="20" id="dBe-o4-wyr"/>
                             <constraint firstItem="EYz-ST-4mp" firstAttribute="width" secondItem="3F4-IS-BEp" secondAttribute="width" multiplier="0.3" id="dTR-29-xaU"/>
                             <constraint firstItem="EYz-ST-4mp" firstAttribute="centerX" secondItem="3F4-IS-BEp" secondAttribute="centerX" id="fMG-5F-j4o"/>
                             <constraint firstItem="tzr-GJ-KKo" firstAttribute="width" secondItem="2sa-El-qXx" secondAttribute="width" id="g7D-et-fuF"/>
+                            <constraint firstItem="WLu-Kc-ulR" firstAttribute="top" secondItem="3F4-IS-BEp" secondAttribute="centerY" constant="-18" id="gaq-5j-jpP"/>
                             <constraint firstItem="3F4-IS-BEp" firstAttribute="leading" secondItem="Zxc-tK-EON" secondAttribute="leading" constant="30" id="ind-mo-Shw"/>
                             <constraint firstItem="tzr-GJ-KKo" firstAttribute="top" secondItem="Zxc-tK-EON" secondAttribute="top" id="jpl-Ih-3Wo"/>
                             <constraint firstItem="EYz-ST-4mp" firstAttribute="height" secondItem="3F4-IS-BEp" secondAttribute="height" multiplier="0.3" id="twv-eg-c82"/>
+                            <constraint firstItem="WLu-Kc-ulR" firstAttribute="leading" secondItem="3F4-IS-BEp" secondAttribute="trailing" constant="10" id="viV-ha-Km1"/>
                             <constraint firstItem="yng-YM-sz6" firstAttribute="centerX" secondItem="Zxc-tK-EON" secondAttribute="centerX" id="xlk-Iy-G2p"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="Zxc-tK-EON"/>
                     </view>
                     <connections>
                         <outlet property="addNotesTextView" destination="IaF-SA-hhH" id="mxn-Ny-md5"/>
-                        <outlet property="mySearchTextField" destination="c7F-Zu-aHR" id="Jfz-Ah-23S"/>
                         <outlet property="postThumbnail" destination="3F4-IS-BEp" id="Mzk-vC-9sN"/>
+                        <outlet property="tagsView" destination="WLu-Kc-ulR" id="ene-Mn-eEt"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="8Um-LL-8yV" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <exit id="AQ6-NO-9KZ" userLabel="Exit" sceneMemberID="exit"/>
             </objects>
-            <point key="canvasLocation" x="2409" y="321"/>
+            <point key="canvasLocation" x="2356" y="344.97751124437787"/>
         </scene>
         <!--Main Tab Bar Controller-->
         <scene sceneID="NrJ-Wx-vnE">
@@ -264,8 +276,12 @@
     <resources>
         <image name="Camera" width="30" height="30"/>
         <image name="Collection" width="30" height="29"/>
+        <image name="Import Media" width="320" height="294"/>
         <image name="Play Triangle" width="110" height="110"/>
         <image name="Record" width="685" height="685"/>
         <image name="Record2" width="685" height="685"/>
     </resources>
+    <inferredMetricsTieBreakers>
+        <segue reference="i9S-Bq-gU0"/>
+    </inferredMetricsTieBreakers>
 </document>

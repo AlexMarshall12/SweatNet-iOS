@@ -16,33 +16,74 @@ private var timelineMonthCellReuseIdentifier = "timelineMonthCell"
 
 class TagViewController: UIViewController,  UICollectionViewDelegate, UICollectionViewDelegateFlowLayout, UICollectionViewDataSource, SNPostViewCellDelegate {
     
+    func editButtonPressed(postID: String?, notes: String?, postDate: Date?, tags: [String : UIColor]?) {
+        editPostAttributes = EditPostAttributes(postId: postID, postDate: postDate, notes: notes, tags: tags)
+    }
+    
+    var editPostAttributes: EditPostAttributes?
+
     var posts = [Post]()
     var postIds = [String]()
     var dayTicks = [Date:UIView]()
     var playbackURL: URL?
     var tagTitle: String!
-    private var dataSources: [IndexPath : dayCellDelegates] = [:]
+    var selectedTagTitles: [String]!
+    var currentPostMonth: Int = 0
+    var currentPostDate: Date?
+    var currentPostId: String?
+    var postStuff: ([Post],[String])?
+    var tags = [Tag]()
+    var backInRange: Bool = true
+    lazy var slideInTransitioningDelegate = SlideInPresentationManager()
+
+    //private var dataSources: [IndexPath : dayCellDelegates] = [:]
     
+    @IBOutlet weak var pageControl: UIPageControl!
     @IBOutlet weak var collectionView: UICollectionView!
     @IBOutlet weak var timeline: UICollectionView!
+    @IBOutlet weak var leftArrow: UIImageView!
+    @IBOutlet weak var rightArrow: UIImageView!
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        self.timeline.register(UINib(nibName: "TimelineMonthViewCell", bundle: nil), forCellWithReuseIdentifier: "TimelineMonthViewCell")
+        pageControl.hidesForSinglePage = true
 
-        UserService.posts(for: User.current,tagString: self.tagTitle!) { (postStuff) in
-            let posts = postStuff.0
-            self.postIds = postStuff.1
-            self.posts = posts.sorted(by: {
-                $0.timeStamp.compare($1.timeStamp) == .orderedAscending
+        let myGroup = DispatchGroup()
+        var allPosts: [Post] = []
+        var allIds: [String] = []
+        print("my title", self.selectedTagTitles)
+        for tag in self.selectedTagTitles {
+            print(tag,"my tag")
+            myGroup.enter()
+            UserService.posts(for: User.current,tagString: tag) { (postStuff) in
+                allPosts += postStuff.0
+                allIds += postStuff.1
+                self.postStuff = postStuff
+//                for i in 0...postStuff.1.count {
+//                    print(i,postStuff.0[i],"stuff",postStuff.1[i])
+//                    allPosts[postStuff.1[i]] = postStuff.0[i]
+//                }
+                myGroup.leave()
+            }
+        }
+        
+        myGroup.notify(queue: .main) {
+            let combined = zip(allPosts,allIds).sorted(by: {
+                $0.0.timeStamp.compare($1.0.timeStamp) == .orderedAscending
             })
-            print(self.posts,"mypost")
+            self.posts = combined.map {tuple in tuple.0}
+            self.postIds = combined.map {tuple in tuple.1}
+            
+//            self.posts = allPosts.sorted(by: {
+//                $0[.timeStamp].compare($1.timeStamp) == .orderedAscending
+//            })
+            self.currentPostDate = self.posts.first?.timeStamp
             self.timeline.dataSource = self
             self.collectionView.dataSource = self
             self.timeline.delegate = self
             self.collectionView.delegate = self
-            //self.timeline.collectionViewLayout.invalidateLayout()
         }
-
 //        let background = UIView()
 //        background.autoresizingMask = [.flexibleWidth, .flexibleHeight]
 //        background.frame = timeline.bounds
@@ -78,19 +119,18 @@ class TagViewController: UIViewController,  UICollectionViewDelegate, UICollecti
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         if collectionView == self.collectionView {
-            print("mypost",self.posts)
-            
+            self.pageControl.numberOfPages = posts.count
             return posts.count
         } else if collectionView == self.timeline {
             let first = posts.first?.timeStamp
             let last = posts.last?.timeStamp
-            let months = last?.months(from: first!) ?? 0
+            let months = last?.months(from: (first?.startOfMonth())!) ?? 0
             print("no of months",months)
 
             if let diff = last?.months(from: first!), diff <= 5 {
-                return months + 5-diff + 12
+                return months + 5-diff 
             } else {
-                return months + 1 + 12
+                return months + 1
             }
         } else {
             preconditionFailure("Unknown collection view!")
@@ -99,20 +139,54 @@ class TagViewController: UIViewController,  UICollectionViewDelegate, UICollecti
     func textViewDidEndEditing(_ textView: UITextView) {
         print("exampleTextView: END EDIT")
     }
-    func myCustomCellDidUpdate(cell: SNPostViewCell, newContent: String) { // do stuff on your view controller with the cell or the new content
-        let index = self.collectionView.indexPath(for: cell)?.item
-        let postId = postIds[index!]
-        PostService.updatePostNotes(id: postId, notes: newContent)
-    }
+//    func myCustomCellDidUpdate(cell: SNPostViewCell, newContent: String) { // do stuff on your view controller with the cell or the new content
+//        let index = self.collectionView.indexPath(for: cell)?.item
+//        let postId = postIds[index!]
+//        PostService.updatePostNotes(id: postId, notes: newContent)
+//    }
     func playButtonPressed(playbackURL: URL?) {
         self.playbackURL = playbackURL
         self.performSegue(withIdentifier: "playVideo", sender: nil)
     }
+    
+    func editButtonPressed(postID: String){
+        self.performSegue(withIdentifier: "editPostContent", sender: nil)
+    }
 
+    
+    func editPostButtonPressed(){
+//        if let keyboardSize = (notification.userInfo?[UIKeyboardFrameBeginUserInfoKey] as? NSValue)?.cgRectValue {
+        if self.view.frame.origin.y == 0{
+            self.view.frame.origin.y -= 200
+        }
+        UserService.tags(for: User.current){ (tags) in
+            self.tags = tags
+        }
+    }
+    
+    func savePostButtonPressed() {
+        //PostService.updatePostTags(id: postId,tags: tagsArr)
+        if self.view.frame.origin.y != 0{
+            self.view.frame.origin.y = 0
+        }
+    }
+
+    func performedTagSearchWithString(cell: SNPostViewCell, string: String, completion: ((_ results: Array<AnyObject>) -> Void)?){
+
+        if (string.isEmpty){
+            completion!(tags as Array<AnyObject>)
+            return
+        }
+        let filteredTags = self.tags.filter { $0.title.localizedCaseInsensitiveContains(string) }
+        completion!(filteredTags as Array<AnyObject>)
+    }
+    func displayTagTitleForObject(cell: SNPostViewCell, object: Tag) -> String {
+        return object.title
+    }
+    
     func dates(_ dates: [Post], withinMonth month: Int, withinYear year: Int) -> [Post] {
         let calendar = Calendar.current
         let components: Set<Calendar.Component> = [.month,.year]
-        print(components,"components")
         let filtered = posts.filter { (post) -> Bool in
             let monthAndYear = calendar.dateComponents(components, from: post.timeStamp)
             return (monthAndYear.month == month && monthAndYear.year == year)
@@ -125,105 +199,121 @@ class TagViewController: UIViewController,  UICollectionViewDelegate, UICollecti
             print(post,"mypost")
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: reuseIdentifier, for: indexPath) as! SNPostViewCell
             cell.isVideo = post.isVideo
+            //cell.postId = postIds[indexPath.item]
+            //let tokens = self.tags.map(
+//            let tokensArr = post.tags.keys.map({
+//                (key: String) -> KSToken in
+//                return KSToken.init(title: key)
+//            })
+            var tagColorsDict: [String:UIColor] = [:]
+            for tag in post.tags {
+                let color = tagColors.sharedInstance.dict[tag.key]
+                tagColorsDict[tag.key] = color
+            }
+            cell.thisPost = cellPostAttributes(ID: postIds[indexPath.item], notes: post.notes,postDate: post.timeStamp, tags: tagColorsDict)
             cell.delegate = self
             cell.notes.text = post.notes
+            cell.tagsView.isUserInteractionEnabled = false
+            cell.notes.isUserInteractionEnabled = false
+
+            cell.tagColorsDict = tagColorsDict
+            cell.tagsView.removesTokensOnEndEditing = false
+            cell.tagsView.promptText = ""
             cell.thumbnailURL = URL(string: post.thumbnailURL)
             let formatter = DateFormatter()
             formatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
             cell.timeStampLabel.text = formatter.string(from: post.timeStamp)
             cell.mediaURL = URL(string: post.mediaURL)
-            cell.notes.topAnchor.constraint(equalTo: cell.thumbnail.bottomAnchor,constant: 0.0).isActive = true
+//            cell.notes.topAnchor.constraint(equalTo: cell.thumbnail.bottomAnchor,constant: 0.0).isActive = true
             return cell
         } else if collectionView == self.timeline {
             let index = indexPath.row
-            print(index,"index")
             let calendar = Calendar.current
+            let firstPost = posts.first?.timeStamp
+            let monthDate = calendar.date(byAdding: .month, value: index, to: firstPost!)
+            let monthInt = calendar.component(.month, from: monthDate!)
+            let yearInt = calendar.component(.year, from: monthDate!)
+            let monthPosts = dates(self.posts, withinMonth: monthInt, withinYear: yearInt)
+            let days = calendar.range(of: .day, in: .month, for: monthDate!)
+            
             let dateFormatter = DateFormatter()
             dateFormatter.dateFormat = "MMM"
-            let firstPost = posts.first?.timeStamp
-            let month = calendar.date(byAdding: .month, value: index, to: firstPost!)
-            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "SNMonthViewCell", for: indexPath) as! SNMonthViewCell
-            cell.monthLabel.text = dateFormatter.string(from: month!)
-            cell.monthLabel.textAlignment = .center
+            
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "TimelineMonthViewCell", for: indexPath) as! TimelineMonthViewCell
+            cell.setDays(num: (days?.count)!)
+            cell.currentQueryTags = self.selectedTagTitles
+            cell.colorViews(monthPosts: monthPosts)
+            cell.year = yearInt
+            cell.month = monthInt
+            cell.monthLabel.text = dateFormatter.string(from: monthDate!)
+            if monthDate!.isInSameMonth(date: self.currentPostDate!) && monthDate!.isInSameYear(date: self.currentPostDate!) {
+                //cell.colorArrow(day: self.currentPostDate!)
+                cell.drawArrow(day: self.currentPostDate!)
+            } else {
+                //unnecessary clearing on first pass. Might be necessary later..
+                cell.clearArrow()
+            }
             return cell
         } else {
             preconditionFailure("Unknown collection view!")
         }
     }
-//    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-//        if collectionView == self.collectionView {
-//            let cell = collectionView.cellForItem(at: indexPath)
-//            print(cell,"selected")
-//            let post = posts[indexPath.row]
-//            if post.isVideo == true {
-//                self.performSegue(withIdentifier: "playVideo", sender: nil)
-//            } else {
-//                print("is image. might go full screen one day here")
-//            }
-//        } else if collectionView == self.timeline {
-//            print("touched timeline")
-//        } else {
-//            preconditionFailure("Unknown collection view!")
-//        }
-//    }
     
     func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
         if scrollView == self.collectionView {
+            //clear current arrow
+            let previousCellIndexPath = IndexPath(row: self.currentPostMonth, section: 0)
+            
+            //get current post for timestamp
             let currentIndex = self.collectionView.contentOffset.x / self.collectionView.frame.size.width
-            //adjust constraint of tracerpin
-            //4th video should find 4th bar.
             let post = posts[Int(currentIndex)]
-            for (_,tick) in self.dayTicks {
-                tick.layer.sublayers = nil
-            }
-            let day = Calendar.current.startOfDay(for: post.timeStamp)
-            print(self.dayTicks,"dayTicks")
-            if let tick = self.dayTicks[day], let tickBounds = self.dayTicks[day]?.bounds {
-                let start_x = tickBounds.origin.x
-                let start_y = tickBounds.origin.y
-                let top_width = tickBounds.width
-                let tick_height = tickBounds.height
-                let tip_height = CGFloat(10)
-                let tip_flare = CGFloat(10)
-                let arrowLayer = CAShapeLayer()
-                let path = UIBezierPath()
-                path.move(to: CGPoint(x: start_x, y: start_y))
-                path.addLine(to: CGPoint(x: start_x + top_width,y: start_y))
-                path.addLine(to: CGPoint(x: start_x + top_width,y: start_y + tick_height))
-                path.addLine(to: CGPoint(x: start_x + top_width + tip_flare,y: start_y+tick_height+tip_height))
-                path.addLine(to: CGPoint(x: start_x - tip_flare,y: start_y + tick_height + tip_height))
-                path.addLine(to: CGPoint(x: start_x,y: start_y+tick_height))
-                path.close()
-                arrowLayer.path = path.cgPath
-                arrowLayer.fillColor = UIColor(red:0.99, green:0.13, blue:0.25, alpha:1.0).cgColor
-                tick.layer.addSublayer(arrowLayer)
-            }
-        } else {
-            print(scrollView, "timeline collection view")
-        }
-       
+            self.currentPostId = post.id
+            self.pageControl.currentPage = Int(currentIndex)
 
-    }
-
-    func collectionView(_ collectionView: UICollectionView,
-                                 willDisplay cell: UICollectionViewCell,
-                                 forItemAt indexPath: IndexPath){
-        if collectionView == self.timeline{
-            guard let monthViewCell = cell as? SNMonthViewCell else  {
-                return
-            }
-            if let dayDelegatesInstance = dataSources[indexPath] {
-                monthViewCell.setCollectionViewDataSourceDelegate(dataSourceDelegate: dayDelegatesInstance)
+            //only clear cell arrow if it is already in an existing cell. Otherwise it will get cleared in prepareForReuse
+            if let optionalCell = self.timeline.cellForItem(at: previousCellIndexPath) {
+                let cell = optionalCell as! TimelineMonthViewCell
+                cell.clearArrow()
             } else {
-                let index = indexPath.item
-                let firstPost = self.posts.first?.timeStamp
-                let monthDate = Calendar.current.date(byAdding: .month, value: index, to: firstPost!)
-                let monthInt = Calendar.current.component(.month, from: monthDate!)
-                let yearInt = Calendar.current.component(.year, from: monthDate!)
-                let postDates = dates(self.posts, withinMonth: monthInt, withinYear: yearInt)
-                let dayDelegatesInstance = dayCellDelegates(firstDay: (monthDate?.startOfMonth())!, monthPosts:postDates)
-                dataSources[indexPath] = dayDelegatesInstance
-                monthViewCell.setCollectionViewDataSourceDelegate(dataSourceDelegate: dayDelegatesInstance)
+                print("cell not loaded")
+            }
+            
+            let firstPost = posts.first?.timeStamp
+            let firstOfFirstMonth = firstPost?.startOfMonth()
+            let diff = post.timeStamp.months(from: firstOfFirstMonth!)
+            self.currentPostMonth = diff
+            let monthCellIndexPath = IndexPath(row: diff, section: 0)
+            
+            if self.timeline.indexPathsForVisibleItems.contains(monthCellIndexPath) {
+                self.rightArrow.isHidden = true
+                self.leftArrow.isHidden = true
+                self.backInRange = true
+            } else {
+                self.timeline.scrollToItem(at: monthCellIndexPath, at: .centeredHorizontally, animated: true)
+//                if backInRange == true {
+//                    if post.timeStamp > self.currentPostDate! {
+//                        self.rightArrow.isHidden = false
+//                        self.backInRange = false
+//                    } else {
+//                        self.leftArrow.isHidden = false
+//                        self.backInRange = false
+//                    }
+//                }
+            }
+            
+            self.currentPostDate = post.timeStamp
+            //only draw cell arrow if the cell exists
+            if let optionalCell = self.timeline.cellForItem(at: monthCellIndexPath) {
+                let cell = optionalCell as! TimelineMonthViewCell
+                cell.drawArrow(day:post.timeStamp)
+            }
+        } else if scrollView == self.timeline {
+            print("timeline stopped scrolling")
+            if self.timeline.indexPathsForVisibleItems.contains(IndexPath(row:self.currentPostMonth, section: 0)){
+                print("visible indexpaths contains the currentPostMonth")
+                self.rightArrow.isHidden = true
+                self.leftArrow.isHidden = true
+                self.backInRange = true
             }
         }
     }
@@ -235,222 +325,23 @@ class TagViewController: UIViewController,  UICollectionViewDelegate, UICollecti
         if collectionView == self.collectionView {
             return CGSize(width: collectionView.bounds.size.width, height: collectionView.bounds.size.height)
         } else {
-            return CGSize(width: collectionView.bounds.size.width/5, height: 40)
+            return CGSize(width: collectionView.bounds.size.width/5, height: collectionView.bounds.size.height)
         }
     }
 
-//    func dates(_ dates: [Date], withinMonth month: Int) -> [Date] {
-//        let calendar = Calendar.current
-//        let components: Set<Calendar.Component> = [.month]
-//        let filtered = dates.filter { (date) -> Bool in
-//            calendar.dateComponents(components, from: date).month == month
-//        }
-//        return filtered
-//    }
-    @objc func tapBar(_ sender:UITapGestureRecognizer) {
-        let bar = sender.view
-        print("bar tapped")
-        //print(bar?.frame.origin.x)
-    }
-
     override func prepare(for segue: UIStoryboardSegue, sender: Any?){
-        if segue.identifier == "playVideo" {
-            let destination = segue.destination as! AVPlayerViewController
-            destination.player = AVPlayer(url: self.playbackURL!)
-            destination.player?.play()
+        if let controller = segue.destination as? AVPlayerViewController {
+            controller.player = AVPlayer(url: self.playbackURL!)
+            controller.player?.play()
+        } else if let controller = segue.destination as? EditPostContentViewController {
+            controller.postAttrs = editPostAttributes
+            controller.transitioningDelegate = slideInTransitioningDelegate
+            controller.modalPresentationStyle = .custom
         }
     }
     @IBAction func unwindToPosts(sender: UIStoryboardSegue) {
     }
 
-//    func setupStack() {
-//        let truncated = Calendar.current.startOfDay(for: Date())
-//        let calendar = Calendar.current
-//        var startDate: Date
-//        //if less than 6 months, end date is 5 months from now
-//        //if 3 months? end date is 2 months from newest date...
-//        //end date = end date + (5 - (end - start))
-//        let endDate = Date() // last date
-//        let first = posts.first?.timeStamp
-//        let firstEpoch = first?.timeIntervalSince1970
-//        let diff = endDate.timeIntervalSince1970 - startDate.timeIntervalSince1970
-//        let last = posts.last?.timeStamp
-//        let nearest_month = first!.endOfMonth()
-//        var date = nearest_month
-//        let dateFormatter = DateFormatter()
-//        dateFormatter.dateFormat = "LLLL"
-//        while date <= last! {
-//            let label = UILabel()
-//            date = calendar.date(byAdding: .month, value: 1, to: date)!
-//            let percentageDisplaced = date.timeIntervalSince1970 - firstEpoch!/diff
-//            label.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
-//            label.text = dateFormatter.string(from: date)
-//            //label.centerXAnchor.constraint(equalTo: view.trailingAnchor,constant: 0,multiplier:0.5)
-//            dateLabels.addSubview(label)
-//        }
-//        if let diff = first?.months(from: last!), diff <= 5 {
-//            let endDate = calendar.date(byAdding: .month, value: 5-diff, to: first!)
-//        } else {
-//            let endDate = last
-//        }
-//        var date = first!
-//
-//        for post in posts {
-//            if
-//        }
-//        while date <= endDate {
-//            let line = UIView()
-//            date = calendar.date(byAdding: .day, value: 1, to: date)!
-//            if postDates.contains(date) {
-//                print("contained")
-//                line.backgroundColor = UIColor.blue
-//            } else {
-//                print("not contained")
-//                line.backgroundColor = UIColor.clear
-//            }
-//            stackView.addSubview(line)
-//        }
-//        var days: Int = 0
-//        var postDates = [Date]()
-//        var firstDate: Bool = true
-//        for post in posts {
-//            postDates.append(post.timeStamp)
-//            let date = post.timeStamp
-//            let midnight = Calendar.current.startOfDay(for: date)
-//            postDates.append(midnight)
-//            if firstDate == true {
-//                let startDate = midnight
-//                firstDate = false
-//            }
-//        }
-//        var date = startDate
-//        let diff = endDate.timeIntervalSince1970 - startDate.timeIntervalSince1970
-//        let offset = startDate.offset(from: Date())
-//        let previous = date
-//        let dateFormatter = DateFormatter()
-//        dateFormatter.dateFormat = "LLLL"
-//        switch offset.last! {
-//        case "y":
-//
-//            switch offset.prefix! {
-//            case 1:
-//                //year and every 4 months
-//                var counter: Int = 0
-//                while date <= endDate {
-//                    date = calendar.date(byAdding: .month, value: 4, to: date)!
-//                    let displacementPercentage = (date.timeIntervalSince1970 - startDate.timeIntervalSince1970)/diff
-//                    let label = UILabel()
-//                    label.bottomAnchor.constraint(equalTo: dateLabels.topAnchor).isActive = true
-//                    label.centerXAnchor.constraint(equalTo: dateLabels.tra, multiplier: CGFloat(displacementPercentage)).isActive = true
-//                    if calendar.component(.month, from: date) == 0 {
-//                        label.text = dateFormatter.string(from: date)
-//                    } else {
-//                        label.text = dateFormatter.string(from: date)
-//                    }
-//                    dateLabels.addSubview(label)
-//                }
-//            case 2,3:
-//                while date <= endDate {
-//                    date = calendar.date(byAdding: .month, value: 6, to: date)!
-//                    dateLabel(displacement: )
-//                }
-//                //year and every 6 months
-//            default:
-//                //every year
-//            }
-//
-//        case "M":
-//            //set start date to first date
-//            switch offset.prefix! {
-//            case 1:
-//                //month and 5 day increments
-//            case 2,3:
-//                //month and 15 day increments
-//            case 4,5,6:
-//                //month only
-//            default:
-//                //set start date to 6 months before end date
-//            }
-//        case "w":
-//            make_labels(every: "w")
-//        }
-//        while date <= endDate {
-//            date = calendar.date(byAdding: .day, value: 1, to: date)!
-//
-//            //case: at least a month
-//            if calendar.component(.day, from: date) == 0 { dateLabel(bin:days,dateString: calendar.component(.month, from date)) }
-//
-//            //case: less than month but more than week
-//            if calendar.component(.day, from: date) ==
-//            let line = UIView()
-//            bins[date] = days
-//            days = days + 1
-//            if postDates.contains(date!) {
-//                print("contained")
-//                line.backgroundColor = UIColor.blue
-//            } else {
-//                print("not contained")
-//                line.backgroundColor = UIColor.clear
-//            }
-//            stackView.addArrangedSubview(line)
-//        }
-//    }
-//    func dateLabel(displacement: Int,dateString: String){
-//        let label = UILabel()
-//        label.bottomAnchor.constraint(equalTo: dateLabels.topAnchor).isActive = true
-//        label.text = dateString
-//        label.centerXAnchor.constraint(equalTo: dateLabels.leadingAnchor, constant: CGFloat(bin)).isActive = true
-//        dateLabels.addSubview(label)
-//    }
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destinationViewController.
-        // Pass the selected object to the new view controller.
-    }
-    */
-
-}
-
-class dayCellDelegates: NSObject,UICollectionViewDataSource, UICollectionViewDelegate {
-    let firstDay: Date
-    let monthPosts: [Post]
-    
-    init(firstDay: Date, monthPosts: [Post]){
-        self.firstDay = firstDay
-        self.monthPosts = monthPosts
-    }
-    
-    func collectionView(_ collectionView: UICollectionView,
-                        numberOfItemsInSection section: Int) -> Int {
-        let range = Calendar.current.range(of: .day, in: .month, for: self.firstDay)!
-        return range.count
-    }
-    
-    func collectionView(_ collectionView: UICollectionView,
-                        layout collectionViewLayout: UICollectionViewLayout,
-                        sizeForItemAt indexPath: IndexPath) -> CGSize {
-        let range = Calendar.current.range(of: .day, in: .month, for: self.firstDay)!
-        return CGSize(width: collectionView.bounds.size.width/CGFloat(range.count), height: collectionView.bounds.size.height)
-    }
-
-    func collectionView(_ collectionView: UICollectionView,
-                        cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "dayCell",
-                                                      for: indexPath as IndexPath)
-        let components: Set<Calendar.Component> = [.day]
-        //let contained = self.postDates.reduce(false,{Calendar.current.dateComponents(components, from: $0).day == indexPath.item})
-        let filtered = self.monthPosts.filter { (post) -> Bool in
-            Calendar.current.dateComponents(components, from: post.timeStamp).day == indexPath.item
-        }
-        cell.layer.borderWidth = 0.1
-        if filtered.isEmpty == false {
-            cell.backgroundColor = UIColor(red:0.15, green:0.67, blue:0.93, alpha:1.0)
-        }
-        return cell
-    }
 }
 
 extension TagViewController {
@@ -465,78 +356,4 @@ extension TagViewController {
     }
 
 }
-
-//            case 30:
-//                let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "30DayMonthCell", for: indexPath) as! thirtyDayMonthViewCell
-//            case 28:
-//                let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "28DayMonthCell", for: indexPath) as! twentyEightDayMonthViewCell
-//            default:
-//                print("found month with weird number of days")
-//                let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "31DayMonthCell", for: indexPath) as! thirtyOneDayMonthViewCell
-//            }
-//            let dateFormatter = DateFormatter()
-//            dateFormatter.dateFormat = "MMM"
-//            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: timelineMonthCellReuseIdentifier, for: indexPath) as! SNTimelineMonthViewCell
-//            let firstPost = posts.first?.timeStamp
-//            let month = Calendar.current.date(byAdding: .month, value: index, to: firstPost!)
-//            let monthInt = Calendar.current.component(.month, from: month!)
-//            let yearInt = Calendar.current.component(.year, from: month!)
-//            let postsInMonthAndYear = dates(posts, withinMonth: monthInt, withinYear: yearInt)
-//            print(postsInMonthAndYear,"postsInMonthAndYear")
-//            if postsInMonthAndYear.isEmpty {
-//                let background = UIView()
-//                background.autoresizingMask = [.flexibleWidth, .flexibleHeight]
-//                background.frame = timeline.bounds
-//                background.backgroundColor = UIColor.gray
-//                cell.layer.borderColor = UIColor.black.cgColor
-//
-//                cell.layer.borderWidth = 1
-//                //cell.dayTicks.addSubview(background)
-//            } else {
-//                cell.layer.borderColor = UIColor.black.cgColor
-//
-//                cell.layer.borderWidth = 1
-//                let tickLayer = CAShapeLayer()
-//                tickLayer.path = UIBezierPath(roundedRect: CGRect(x: 0, y: 0, width: cell.layer.bounds.width, height: cell.layer.bounds.height), cornerRadius: 5).cgPath
-//                tickLayer.fillColor = UIColor(red:0.99, green:0.13, blue:0.25, alpha:1.0).cgColor
-//                cell.layer.addSublayer(tickLayer)
-//
-//                if let start = month?.startOfMonth(), let end = month?.endOfMonth(), let stackView = cell.dayTicks {
-//                    var date = start
-//                    //timeline.addSubview(background)
-//                    while date <= end {
-//                        let line = UIView()
-//                        if posts.contains(where: { Calendar.current.isDate(date, inSameDayAs: $0.timeStamp) }) {
-//                            print("Found blue", date)
-//                            line.backgroundColor = UIColor(red:0.15, green:0.67, blue:0.93, alpha:1.0)
-//                            let tapGuesture = UITapGestureRecognizer(target: self, action:  #selector (self.tapBar (_:)))
-//                            line.isUserInteractionEnabled = true
-//                            line.addGestureRecognizer(tapGuesture)
-//                            self.dayTicks[date] = line
-//                        } else {
-//                            line.backgroundColor = UIColor.clear
-//                        }
-//                        stackView.addArrangedSubview(line)
-//                        date = Calendar.current.date(byAdding: .day, value: 1, to: date)!
-//                    }
-//                }
-//        }
-//            if Calendar.current.component(.month, from: month!) == 12 {
-//                let yearLabel = UILabel()
-//                yearLabel.text = "20"
-//                yearLabel.trailingAnchor.constraint(equalTo: cell.trailingAnchor, constant: 0.0).isActive = true
-//                cell.monthLabel.addSubview(yearLabel)
-//            }
-//            if Calendar.current.component(.month, from: month!) == 01 {
-//                let yearLabel = UILabel()
-//                yearLabel.text = String(String(Calendar.current.component(.year,from: month!)).suffix(2))
-//                yearLabel.leadingAnchor.constraint(equalTo: cell.leadingAnchor,constant:0.0).isActive = true
-//                cell.monthLabel.addSubview(yearLabel)
-//            }
-//            cell.monthLabel.text = dateFormatter.string(from: month!)
-//            cell.monthLabel.textAlignment = .center
-//            let background = UIView()
-//            background.autoresizingMask = [.flexibleWidth, .flexibleHeight]
-//            background.frame = timeline.bounds
-//            background.backgroundColor = UIColor.red
 

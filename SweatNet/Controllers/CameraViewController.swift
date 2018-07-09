@@ -8,6 +8,8 @@
 
 import AVFoundation
 import UIKit
+import Photos
+import MobileCoreServices
 
 var captureSession: AVCaptureSession?
 var videoPreviewLayer: AVCaptureVideoPreviewLayer?
@@ -16,6 +18,8 @@ class CameraViewController: UIViewController, UIImagePickerControllerDelegate, U
     
     let captureSession = AVCaptureSession()
     let movieOutput = AVCaptureMovieFileOutput()
+    let imagePicker = UIImagePickerController()
+
     var previewLayer: AVCaptureVideoPreviewLayer!
     var activeInput: AVCaptureDeviceInput!
     var footageURL: URL?
@@ -26,12 +30,19 @@ class CameraViewController: UIViewController, UIImagePickerControllerDelegate, U
 
     @IBOutlet weak var recordingSpinnerInner: UIImageView!
     @IBOutlet weak var recordingSpinner: UIImageView!
-    @IBOutlet weak var importMediaButton: UIButton!
+
     @IBOutlet weak var camPreview: UIView!
+    
+    var pickedPhoto: UIImage?
+    var pickedPhotoThumbnail: UIImage?
+    var pickedMovieURL: URL?
+    var pickedMediaThumbnail: UIImage?
+    var pickedMediaDate: Date?
     
     override func viewDidLoad() {
         super.viewDidLoad()
         self.recordingSpinner.isUserInteractionEnabled = true
+        imagePicker.delegate = self
         let tap = UITapGestureRecognizer(target: self, action: #selector(handleTap))
         self.recordingSpinner.addGestureRecognizer(tap)
         if setupSession(){
@@ -44,7 +55,93 @@ class CameraViewController: UIViewController, UIImagePickerControllerDelegate, U
         super.viewDidAppear(animated)
         self.navigationController?.navigationBar.backgroundColor = UIColor(red: 1.0, green: 0.0, blue: 0.0, alpha: 0.5)
     }
-    
+    func setThumbnailFrom(path: URL) -> UIImage? {
+        
+        do {
+            let asset = AVURLAsset(url: path , options: nil)
+            let imgGenerator = AVAssetImageGenerator(asset: asset)
+            imgGenerator.appliesPreferredTrackTransform = true
+            let cgImage = try imgGenerator.copyCGImage(at: CMTimeMake(0, 1), actualTime: nil)
+            let thumbnail = UIImage(cgImage: cgImage)
+            return thumbnail
+        } catch let error {
+            
+            print("*** Error generating thumbnail: \(error.localizedDescription)")
+            return nil
+            
+        }
+        
+    }
+    @IBAction func importButtonPressed(_ sender: Any) {
+        PHPhotoLibrary.requestAuthorization({status in
+            switch status {
+            case .authorized:
+                self.imagePicker.sourceType = .photoLibrary
+                self.imagePicker.allowsEditing = true
+                self.imagePicker.mediaTypes = [kUTTypeMovie as String, kUTTypeImage as String]
+                
+                self.present(self.imagePicker,animated: true, completion: nil)
+            case .denied:
+                print("denied")
+            // probably alert the user that they need to grant photo access
+            case .notDetermined:
+                print("not determined")
+            case .restricted:
+                print("restricted")
+                // probably alert the user that photo access is restricted
+            }
+        })
+    }
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
+        //dismiss(animated: true, completion: nil)
+        print("finished mediapicker")
+        guard info[UIImagePickerControllerMediaType] != nil else { return }
+        let mediaType = info[UIImagePickerControllerMediaType] as! CFString
+        print("video is",mediaType)
+        switch mediaType {
+        case kUTTypeImage:
+            if let pickedImage = info[UIImagePickerControllerOriginalImage] as? UIImage, let pickedAsset = info[UIImagePickerControllerPHAsset] as? PHAsset {
+                
+                self.pickedPhoto = pickedImage
+                MyVariables.isScreenshot = true
+                self.pickedMediaThumbnail = pickedImage
+                let creationDate = pickedAsset.creationDate
+                self.pickedMediaDate = creationDate
+                dismiss(animated: true) {
+                    self.performSegue(withIdentifier: "CreatePostWithImportedMedia", sender: nil)
+                }
+            }
+            break
+        case kUTTypeMovie:
+            if let videoURL = info[UIImagePickerControllerMediaURL] as? URL,let pickedAsset = info[UIImagePickerControllerPHAsset] as? PHAsset {
+                print("KUMOVIE")
+                MyVariables.isScreenshot = false
+                let creationDate = pickedAsset.creationDate
+                print("creationDate ",creationDate)
+                print("creationDate  ",pickedAsset)
+                self.pickedMovieURL = videoURL
+                self.pickedMediaDate = creationDate
+                self.pickedMediaThumbnail = setThumbnailFrom(path: videoURL)
+                dismiss(animated: true) {
+                    self.performSegue(withIdentifier: "CreatePostWithImportedMedia", sender: nil)
+                }
+            }
+            break
+        case kUTTypeLivePhoto:
+            print("livePhoto")
+            dismiss(animated: true, completion: nil)
+            
+            break
+        default:
+            dismiss(animated: false, completion: nil)
+            
+            print("something else")
+            break
+        }
+    }
+    func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
+        dismiss(animated: true, completion: nil)
+    }
     
     @objc func handleTap(_ gesture:UITapGestureRecognizer) {
 //        if animator == nil {
@@ -78,6 +175,21 @@ class CameraViewController: UIViewController, UIImagePickerControllerDelegate, U
         previewLayer.videoGravity = AVLayerVideoGravity.resizeAspectFill
         camPreview.layer.addSublayer(previewLayer)
     }
+//    override func viewWillLayoutSubviews() {
+//        
+//        let orientation: UIDeviceOrientation = UIDevice.current.orientation
+//        
+//        switch (orientation) {
+//        case .portrait:
+//            previewLayer?.connection.videoOrientation = .Portrait
+//        case .LandscapeRight:
+//            previewLayer?.connection.videoOrientation = .LandscapeLeft
+//        case .LandscapeLeft:
+//            previewLayer?.connection.videoOrientation = .LandscapeRight
+//        default:
+//            previewLayer?.connection.videoOrientation = .Portrait
+//        }
+//    }
 //    private func createAnimation() {
 //        animator = UIViewPropertyAnimator.runningPropertyAnimator(withDuration: 4, delay: 0, options: [.curveLinear,.allowUserInteraction], animations: {
 //            UIView.animateKeyframes(withDuration: 4, delay: 0, animations: {
@@ -238,6 +350,7 @@ extension CameraViewController: AVCaptureFileOutputRecordingDelegate{
         if (error != nil) {
             print("Error recording movie: \(error!.localizedDescription)")
         } else {
+            print("Finished Recording")
             self.footageURL = outputFileURL as URL
             //print(self.videoRecorded!)
             self.performSegue(withIdentifier: "TrimFootage_Segue", sender: nil)
@@ -247,6 +360,17 @@ extension CameraViewController: AVCaptureFileOutputRecordingDelegate{
         if segue.identifier == "TrimFootage_Segue" {
             let controller = segue.destination as! TrimFootageViewController
             controller.footageURL = self.footageURL
+            controller.mediaDate = Date()
+
+        } else if segue.identifier == "CreatePostWithImportedMedia" {
+            guard self.pickedMediaThumbnail != nil else {
+                return
+            }
+            let controller = segue.destination as! CreatePostViewController
+            controller.postDate = self.pickedMediaDate
+            controller.thumbnailImage = self.pickedMediaThumbnail
+            controller.videoURL = self.pickedMovieURL
+            controller.screenshotOut = self.pickedPhoto
         }
     }
 }
