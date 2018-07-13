@@ -49,20 +49,23 @@ class User: NSObject {
     
     let uid: String
     let username: String
+    let storage: UInt64
     
     // MARK: - Init
     
-    init(uid: String, username: String) {
+    init(uid: String, username: String, storage: UInt64) {
         self.uid = uid
         self.username = username
+        self.storage = storage
         super.init()
     }
     
     init?(dictionary: [String : Any]) {
-        guard let username = dictionary["username"] as? String, let uid = dictionary["uid"] as? String
+        guard let username = dictionary["username"] as? String, let uid = dictionary["uid"] as? String, let storage = dictionary["storage"] as? UInt64
             else { return nil }
         self.uid = uid
         self.username = username
+        self.storage = storage
         super.init()
     }
     required init?(coder aDecoder: NSCoder) {
@@ -71,11 +74,11 @@ class User: NSObject {
             else { return nil }
         self.uid = uid
         self.username = username
-        
+        self.storage = 0
         super.init()
     }
     var dictValue: [String: Any] {
-        return ["uid":uid ,"username": username]
+        return ["uid":uid ,"username": username,"storage":storage]
     }
 }
 

@@ -40,7 +40,7 @@ struct UserService {
     
     static func create(_ firUser: FIRUser, username: String, completion: @escaping (User?) -> Void) {
         let newUserRef = Firestore.firestore().collection("users").document(firUser.uid)
-        let user = User(uid: firUser.uid, username: username)
+        let user = User(uid: firUser.uid, username: username, storage: 0)
         print(user.dictValue)
         newUserRef.setData(user.dictValue) { err in
                 if let err = err {
@@ -86,4 +86,28 @@ struct UserService {
             }
         }
     }
+    
+    static func updateStorage(forUID uid: String, size: Int64) {
+        var s = 0
+        if isKeyPresentInUserDefaults(key: "total_storage") == true {
+            s = UserDefaults.standard.integer(forKey: "total_storage")
+        } else {
+            s = 0
+        }
+        let newStorage = Int64(s) + size
+        UserDefaults.standard.set(newStorage,forKey:"total_storage")
+        
+        let docRef = Firestore.firestore().collection("users").document(uid)
+        docRef.updateData([
+            "totalStorage": newStorage
+        ]) { err in
+            if let err = err {
+                print("Error updating document: \(err)")
+            } else {
+                print("Document successfully updated!")
+            }
+        }
+
+    }
+
 }

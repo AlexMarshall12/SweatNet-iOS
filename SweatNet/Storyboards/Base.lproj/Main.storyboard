@@ -26,10 +26,10 @@
                                 <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                             </view>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="a2R-am-4Ce" userLabel="ImportButton">
-                                <rect key="frame" x="305" y="5" width="67" height="53"/>
+                                <rect key="frame" x="324" y="5" width="48" height="43"/>
                                 <constraints>
-                                    <constraint firstAttribute="width" constant="67" id="UpC-gx-bma"/>
-                                    <constraint firstAttribute="height" constant="53" id="dcL-mw-Bk8"/>
+                                    <constraint firstAttribute="width" constant="48" id="UpC-gx-bma"/>
+                                    <constraint firstAttribute="height" constant="43" id="dcL-mw-Bk8"/>
                                 </constraints>
                                 <state key="normal" title="Button" image="Import Media"/>
                                 <connections>
@@ -111,13 +111,6 @@
                                 <rect key="frame" x="0.0" y="64" width="375" height="508"/>
                                 <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                             </view>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="fD5-rR-xNX">
-                                <rect key="frame" x="0.0" y="637" width="46" height="30"/>
-                                <state key="normal" title="Import"/>
-                                <connections>
-                                    <action selector="importButtonPressed:" destination="6Ix-Be-c4P" eventType="touchUpInside" id="7xt-PZ-BE3"/>
-                                </connections>
-                            </button>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="TJS-cq-dUn" customClass="TrimmerView" customModule="SweatNet" customModuleProvider="target">
                                 <rect key="frame" x="20" y="597" width="335" height="60"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
@@ -138,10 +131,7 @@
                             <constraint firstItem="7RY-QN-Beo" firstAttribute="trailing" secondItem="TJS-cq-dUn" secondAttribute="trailing" constant="20" id="Zdu-8d-S4U"/>
                             <constraint firstItem="7RY-QN-Beo" firstAttribute="trailing" secondItem="wRl-aF-BLV" secondAttribute="trailing" id="dOK-4Q-INW"/>
                             <constraint firstItem="6zO-J0-pLf" firstAttribute="leading" secondItem="7RY-QN-Beo" secondAttribute="leading" id="uw8-0A-HGO"/>
-                            <constraint firstItem="fD5-rR-xNX" firstAttribute="bottom" secondItem="7RY-QN-Beo" secondAttribute="bottom" id="y29-SF-8JR"/>
                             <constraint firstItem="7RY-QN-Beo" firstAttribute="bottom" secondItem="TJS-cq-dUn" secondAttribute="bottom" constant="10" id="y6M-kd-xh0"/>
-                            <constraint firstItem="7RY-QN-Beo" firstAttribute="leading" secondItem="fD5-rR-xNX" secondAttribute="leading" id="yAK-2K-B9L"/>
-                            <constraint firstItem="fD5-rR-xNX" firstAttribute="leading" secondItem="7RY-QN-Beo" secondAttribute="leading" id="yyL-rr-2wW"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="7RY-QN-Beo"/>
                     </view>
@@ -205,12 +195,15 @@
                                     <constraint firstAttribute="height" constant="1" id="kZo-pn-cBi"/>
                                 </constraints>
                             </view>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" image="Play Triangle" translatesAutoresizingMaskIntoConstraints="NO" id="EYz-ST-4mp">
-                                <rect key="frame" x="56" y="120" width="46" height="48"/>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Play Triangle" translatesAutoresizingMaskIntoConstraints="NO" id="EYz-ST-4mp">
+                                <rect key="frame" x="65" y="129" width="30" height="30"/>
                             </imageView>
-                            <view contentMode="scaleToFill" ambiguous="YES" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="WLu-Kc-ulR" userLabel="Tags View" customClass="KSTokenView" customModule="SweatNet" customModuleProvider="target">
-                                <rect key="frame" x="138" y="126" width="225" height="36"/>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="WLu-Kc-ulR" userLabel="Tags View" customClass="KSTokenView" customModule="SweatNet" customModuleProvider="target">
+                                <rect key="frame" x="140" y="126" width="225" height="36"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="36" id="9em-4U-m33"/>
+                                </constraints>
                             </view>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
@@ -277,7 +270,7 @@
         <image name="Camera" width="30" height="30"/>
         <image name="Collection" width="30" height="29"/>
         <image name="Import Media" width="320" height="294"/>
-        <image name="Play Triangle" width="110" height="110"/>
+        <image name="Play Triangle" width="50" height="50"/>
         <image name="Record" width="685" height="685"/>
         <image name="Record2" width="685" height="685"/>
     </resources>

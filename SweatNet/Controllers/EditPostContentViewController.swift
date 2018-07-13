@@ -12,7 +12,7 @@ struct EditPostAttributes {
     let postId: String?
     let postDate: Date?
     let notes: String?
-    let tags: [String:UIColor]?
+    let tags: [String]?
 }
 
 class EditPostContentViewController: UIViewController {
@@ -40,9 +40,10 @@ class EditPostContentViewController: UIViewController {
         }
         tokenView.delegate = self
         tokenView.promptText = "Tags: "
-        for (tag,color) in (postAttrs?.tags)! {
+        for tag in (postAttrs?.tags)! {
             let token = KSToken(title: tag)
-            token.tokenBackgroundColor = color
+            let color = tagColors.sharedInstance.dict[tag]
+            token.tokenBackgroundColor = color!
             tokenView.addToken(token)
         }
         notesView.text = postAttrs?.notes

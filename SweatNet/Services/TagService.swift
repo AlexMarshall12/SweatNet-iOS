@@ -10,6 +10,7 @@ import Foundation
 import FirebaseFirestore
 import FirebaseStorage
 import UIKit
+import HSLuvSwift
 
 struct TagService {
     
@@ -49,8 +50,21 @@ struct TagService {
     }
     static func createTag(title: String,thumbnailURL:String, latestUpdate: Date) {
         let currentUser = User.current
+        let phi = (1 + pow(5,0.5)) / 2
         let docRef = Firestore.firestore().collection("users").document(currentUser.uid).collection("tags").document(title)
-        let tagColor = UIColor.random()
+        var h = 0.0
+        if let seed = UserDefaults.standard.object(forKey: "color_seed") as? Double {
+            h = seed
+        } else {
+            h = Double(arc4random()) / Double(UInt32.max)
+        }
+        h += phi
+        h = h.truncatingRemainder(dividingBy: 2*Double.pi)
+        let tagColor = UIColor(hue: Double(h*(180/Double.pi)), saturation: 95.0, lightness: 60.0, alpha: 1.0)
+        
+        let seed = h
+        UserDefaults.standard.set(seed,forKey:"color_seed")
+        
         let colorArr = [tagColor.redValue,tagColor.blueValue,tagColor.greenValue]
         let tag = Tag(title: title,latestThumbnailURL: thumbnailURL, latestUpdate: latestUpdate, color: colorArr)
         docRef.setData(tag.dictValue) { err in

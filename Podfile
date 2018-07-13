@@ -10,6 +10,7 @@ target 'SweatNet' do
   pod 'FirebaseUI/Auth'
   pod 'Firebase/Database'
   pod 'Firebase/Storage'
+  pod 'HSLuvSwift','~>2.0.0'
   pod 'Kingfisher', '~> 4.0'
   pod "SearchTextField"
 

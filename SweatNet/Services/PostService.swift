@@ -34,10 +34,11 @@ struct PostService {
     }
     static func createImagePost(image: UIImage, timeStamp: Date, tags: [String], notes: String) {
         let imageRef = StorageReference.postImageReference(timeStamp:timeStamp)
-        StorageService.uploadImage(image, at: imageRef) { (downloadURL) in
-            guard let downloadURL = downloadURL else {
+        StorageService.uploadImage(image, at: imageRef) { (metadata) in
+            guard let downloadURL = metadata?.downloadURL(), let size = metadata?.size else {
                 return
             }
+            UserService.updateStorage(forUID: User.current.uid, size: size)
             let urlString = downloadURL.absoluteString
             uploadThumbnail(urlString: urlString, timeStamp: timeStamp, thumbnailImage: image, tags:tags, notes: notes,isVideo: false)
         }
@@ -45,10 +46,11 @@ struct PostService {
     
     static func createVideoPost(video: URL, timeStamp: Date, thumbnailImage: UIImage, tags: [String], notes: String) {
         let videoRef = StorageReference.postVideoReference(timeStamp: timeStamp)
-        StorageService.uploadVideo(video as NSURL, at: videoRef){ (downloadURL) in
-            guard let downloadURL = downloadURL else {
+        StorageService.uploadVideo(video as NSURL, at: videoRef){ (metadata) in
+            guard let downloadURL = metadata?.downloadURL(), let size = metadata?.size else {
                 return
             }
+            UserService.updateStorage(forUID: User.current.uid, size: size)
             let urlString = downloadURL.absoluteString
             uploadThumbnail(urlString: urlString, timeStamp: timeStamp, thumbnailImage: thumbnailImage, tags:tags, notes: notes, isVideo: true)
         }
@@ -56,12 +58,12 @@ struct PostService {
     
     private static func uploadThumbnail(urlString: String, timeStamp: Date, thumbnailImage: UIImage, tags: [String], notes: String, isVideo: Bool){
         let thumbnailRef = StorageReference.postThumbnailReference(timeStamp: timeStamp)
-        StorageService.uploadImage(thumbnailImage, at: thumbnailRef){ (downloadURL) in
-            guard let thumbnailURL = downloadURL else {
+        StorageService.uploadImage(thumbnailImage, at: thumbnailRef){ (metadata) in
+            guard let thumbnailURL = metadata?.downloadURL(), let size = metadata?.size else {
                 return
             }
+            UserService.updateStorage(forUID: User.current.uid, size: size)
             let thumbnailURLString = thumbnailURL.absoluteString
-            
             create(forURLString: urlString, thumbnailURLString: thumbnailURLString, tags:tags, Notes: notes, isVideo: isVideo,timeStamp: timeStamp)
         }
     }

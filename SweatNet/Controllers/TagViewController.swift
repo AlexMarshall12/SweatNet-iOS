@@ -14,9 +14,8 @@ import AVFoundation
 private var reuseIdentifier = "PostCell"
 private var timelineMonthCellReuseIdentifier = "timelineMonthCell"
 
-class TagViewController: UIViewController,  UICollectionViewDelegate, UICollectionViewDelegateFlowLayout, UICollectionViewDataSource, SNPostViewCellDelegate {
-    
-    func editButtonPressed(postID: String?, notes: String?, postDate: Date?, tags: [String : UIColor]?) {
+class TagViewController: UIViewController,  UICollectionViewDelegate, UICollectionViewDelegateFlowLayout, UICollectionViewDataSource, PostCollectionViewCellDelegate {
+    func editButtonPressed(postID: String?, notes: String?, postDate: Date?, tags: [String]?) {
         editPostAttributes = EditPostAttributes(postId: postID, postDate: postDate, notes: notes, tags: tags)
     }
     
@@ -33,7 +32,7 @@ class TagViewController: UIViewController,  UICollectionViewDelegate, UICollecti
     var currentPostId: String?
     var postStuff: ([Post],[String])?
     var tags = [Tag]()
-    var backInRange: Bool = true
+//    var backInRange: Bool = true
     lazy var slideInTransitioningDelegate = SlideInPresentationManager()
 
     //private var dataSources: [IndexPath : dayCellDelegates] = [:]
@@ -41,18 +40,19 @@ class TagViewController: UIViewController,  UICollectionViewDelegate, UICollecti
     @IBOutlet weak var pageControl: UIPageControl!
     @IBOutlet weak var collectionView: UICollectionView!
     @IBOutlet weak var timeline: UICollectionView!
-    @IBOutlet weak var leftArrow: UIImageView!
-    @IBOutlet weak var rightArrow: UIImageView!
+//    @IBOutlet weak var leftArrow: UIImageView!
+//    @IBOutlet weak var rightArrow: UIImageView!
     
     override func viewDidLoad() {
         super.viewDidLoad()
         self.timeline.register(UINib(nibName: "TimelineMonthViewCell", bundle: nil), forCellWithReuseIdentifier: "TimelineMonthViewCell")
+        self.collectionView.register(UINib(nibName: "PostCollectionViewCell", bundle: nil), forCellWithReuseIdentifier: "PostCollectionViewCell")
         pageControl.hidesForSinglePage = true
+        self.collectionView.backgroundColor = UIColor(red:0.93, green:0.93, blue:0.94, alpha:1.0)
 
         let myGroup = DispatchGroup()
         var allPosts: [Post] = []
         var allIds: [String] = []
-        print("my title", self.selectedTagTitles)
         for tag in self.selectedTagTitles {
             print(tag,"my tag")
             myGroup.enter()
@@ -94,6 +94,7 @@ class TagViewController: UIViewController,  UICollectionViewDelegate, UICollecti
     }
     override func viewWillAppear(_ animated: Bool) {
         super.viewDidLoad()
+        print(self.selectedTagTitles,"tagTitles")
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow), name:NSNotification.Name.UIKeyboardWillShow, object: nil);
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide), name:NSNotification.Name.UIKeyboardWillHide, object: nil);
     }
@@ -197,34 +198,9 @@ class TagViewController: UIViewController,  UICollectionViewDelegate, UICollecti
         if collectionView == self.collectionView {
             let post = posts[indexPath.row]
             print(post,"mypost")
-            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: reuseIdentifier, for: indexPath) as! SNPostViewCell
-            cell.isVideo = post.isVideo
-            //cell.postId = postIds[indexPath.item]
-            //let tokens = self.tags.map(
-//            let tokensArr = post.tags.keys.map({
-//                (key: String) -> KSToken in
-//                return KSToken.init(title: key)
-//            })
-            var tagColorsDict: [String:UIColor] = [:]
-            for tag in post.tags {
-                let color = tagColors.sharedInstance.dict[tag.key]
-                tagColorsDict[tag.key] = color
-            }
-            cell.thisPost = cellPostAttributes(ID: postIds[indexPath.item], notes: post.notes,postDate: post.timeStamp, tags: tagColorsDict)
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "PostCollectionViewCell", for: indexPath) as! PostCollectionViewCell
+            cell.thisPost = cellPostAttributes(ID: postIds[indexPath.item], notes: post.notes, isVideo: post.isVideo, postDate: post.timeStamp, mediaURL: URL(string: post.mediaURL), thumbnailURL: URL(string: post.thumbnailURL), tags: Array(post.tags.keys))
             cell.delegate = self
-            cell.notes.text = post.notes
-            cell.tagsView.isUserInteractionEnabled = false
-            cell.notes.isUserInteractionEnabled = false
-
-            cell.tagColorsDict = tagColorsDict
-            cell.tagsView.removesTokensOnEndEditing = false
-            cell.tagsView.promptText = ""
-            cell.thumbnailURL = URL(string: post.thumbnailURL)
-            let formatter = DateFormatter()
-            formatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
-            cell.timeStampLabel.text = formatter.string(from: post.timeStamp)
-            cell.mediaURL = URL(string: post.mediaURL)
-//            cell.notes.topAnchor.constraint(equalTo: cell.thumbnail.bottomAnchor,constant: 0.0).isActive = true
             return cell
         } else if collectionView == self.timeline {
             let index = indexPath.row
@@ -285,9 +261,10 @@ class TagViewController: UIViewController,  UICollectionViewDelegate, UICollecti
             let monthCellIndexPath = IndexPath(row: diff, section: 0)
             
             if self.timeline.indexPathsForVisibleItems.contains(monthCellIndexPath) {
-                self.rightArrow.isHidden = true
-                self.leftArrow.isHidden = true
-                self.backInRange = true
+                print("nothing")
+//                self.rightArrow.isHidden = true
+//                self.leftArrow.isHidden = true
+//                self.backInRange = true
             } else {
                 self.timeline.scrollToItem(at: monthCellIndexPath, at: .centeredHorizontally, animated: true)
 //                if backInRange == true {
@@ -311,9 +288,9 @@ class TagViewController: UIViewController,  UICollectionViewDelegate, UICollecti
             print("timeline stopped scrolling")
             if self.timeline.indexPathsForVisibleItems.contains(IndexPath(row:self.currentPostMonth, section: 0)){
                 print("visible indexpaths contains the currentPostMonth")
-                self.rightArrow.isHidden = true
-                self.leftArrow.isHidden = true
-                self.backInRange = true
+//                self.rightArrow.isHidden = true
+//                self.leftArrow.isHidden = true
+//                self.backInRange = true
             }
         }
     }

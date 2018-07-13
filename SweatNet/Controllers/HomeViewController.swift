@@ -8,6 +8,7 @@
 
 import UIKit
 import Kingfisher
+import HSLuvSwift
 
 private var reuseIdentifier = "TagCell"
 
@@ -31,15 +32,11 @@ class HomeViewController: UIViewController, UICollectionViewDelegate, UICollecti
         lpgr.delaysTouchesBegan = true
         self.collectionView?.addGestureRecognizer(lpgr)
         self.collectionView.allowsMultipleSelection = true
-        // Do any additional setup after loading the view.
-    }
-    
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(false)
-        self.searchBar.delegate = self
-        activityIndicator.startAnimating()
         UserService.tags(for: User.current) { (tags) in
             self.activityIndicator.stopAnimating()
+//            self.tags = tags.sorted(by: {
+//                $0.latestUpdate.compare($1.latestUpdate) == .orderedAscending
+//            })
             self.tags = tags
             self.filteredTags = tags
             for (i,tag) in tags.enumerated() {
@@ -53,20 +50,24 @@ class HomeViewController: UIViewController, UICollectionViewDelegate, UICollecti
                     self.collectionView.selectItem(at: indexPath, animated: false, scrollPosition: [])
                 }
             }
+            self.resetShowButton()
             self.collectionView.reloadData()
         }
+//        let background = UIView()
+//        background.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+//        background.frame = collectionView.bounds
+//        background.backgroundColor = UIColor.red
+//        collectionView.addSubview(background)
+        // Do any additional setup after loading the view.
+        
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(false)
+        self.searchBar.delegate = self
     }
     
     @IBOutlet var collectionView: UICollectionView!
-    /*
-     // MARK: - Navigation
-     
-     // In a storyboard-based application, you will often want to do a little preparation before navigation
-     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-     // Get the new view controller using segue.destinationViewController.
-     // Pass the selected object to the new view controller.
-     }
-     */
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         // #warning Incomplete implementation, return the number of items
@@ -80,7 +81,7 @@ class HomeViewController: UIViewController, UICollectionViewDelegate, UICollecti
         // Configure the cell
         //let imageURL = URL(string: tag.imageURL)
         cell.backgroundColor = UIColor.black
-        cell.tagTitle.text = tag.title
+        cell.tagTitle.text = " " + tag.title + " "
         if let selected = selectedCells.sharedInstance.dict[indexPath] {
             cell.isSelected = selected
         } else {
@@ -89,15 +90,17 @@ class HomeViewController: UIViewController, UICollectionViewDelegate, UICollecti
         cell.check.isHidden = !cell.isSelected
         cell.tagTitle.backgroundColor = tagColors.sharedInstance.dict[tag.title]
         cell.tagTitle.layer.cornerRadius = 5
+        cell.tagTitle.layer.masksToBounds = true
         cell.customSelect = selectedCells.sharedInstance.dict[indexPath]
         cell.layer.cornerRadius = 5
+        cell.imageView.layer.cornerRadius = 5
         let latestUpdateDate = tag.latestUpdate
         cell.latestUpdate.text = timeAgoSinceDate(latestUpdateDate)
         let thumbURL = URL(string: tag.latestThumbnailURL)
         cell.imageView.kf.setImage(with: thumbURL)
-        cell.latestUpdate.textColor = UIColor(red:0.40, green:0.80, blue:1.00, alpha:1.0)
+        //cell.latestUpdate.textColor = UIColor(red:0.40, green:0.80, blue:1.00, alpha:1.0)
         cell.tagTitle.textColor = UIColor.white
-        cell.latestUpdate.font = UIFont(name: "HelveticaNeue", size:11.0)
+        cell.latestUpdate.font = UIFont(name: "HelveticaNeue", size:12.0)
         return cell
     }
     
@@ -114,6 +117,7 @@ class HomeViewController: UIViewController, UICollectionViewDelegate, UICollecti
         self.tagTitle = tag.title
         self.selectedTagTitles = [tag.title]
         self.performSegue(withIdentifier: "viewTagPosts", sender: nil)
+        self.collectionView.deselectItem(at: indexPath, animated: false)
     }
     @IBAction func showButtonPressed(_ sender: Any) {
         self.performSegue(withIdentifier: "viewTagPosts", sender: nil)
@@ -122,7 +126,6 @@ class HomeViewController: UIViewController, UICollectionViewDelegate, UICollecti
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "viewTagPosts" {
             let destination = segue.destination as! TagViewController
-            destination.tagTitle = self.tagTitle
             let selectedItemIndexes = self.collectionView.indexPathsForSelectedItems
             var selectedTagTitles: [String] = []
             for index in selectedItemIndexes! {
@@ -174,12 +177,17 @@ class HomeViewController: UIViewController, UICollectionViewDelegate, UICollecti
                     cell.isSelected = false
                     cell.check.isHidden = true
                 }
-                if (self.collectionView.indexPathsForSelectedItems?.count)! > 0 {
-                    showButton.isEnabled = true
-                } else {
-                    showButton.isEnabled = false
-                }
+                resetShowButton()
             }
+        }
+    }
+    
+    func resetShowButton(){
+        if (self.collectionView.indexPathsForSelectedItems?.count)! > 0 {
+            showButton.isEnabled = true
+        } else {
+            print("selectedCell",(self.collectionView.indexPathsForSelectedItems?.count)!)
+            showButton.isEnabled = false
         }
     }
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar)
@@ -192,6 +200,9 @@ class HomeViewController: UIViewController, UICollectionViewDelegate, UICollecti
 //
 //    }
     @IBAction func unwindToHome(sender: UIStoryboardSegue) {
+        print("unwound")
+        self.selectedTagTitles.removeAll()
+        print(self.selectedTagTitles,"unwound")
     }
     
 }

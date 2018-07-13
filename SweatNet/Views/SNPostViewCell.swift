@@ -9,13 +9,13 @@
 import UIKit
 import AVKit
 import AVFoundation
-
-struct cellPostAttributes {
-    let ID: String?
-    let notes: String?
-    let postDate: Date?
-    let tags: [String:UIColor]?
-}
+//
+//struct cellPostAttributes {
+//    let ID: String?
+//    let notes: String?
+//    let postDate: Date?
+//    let tags: [String:UIColor]?
+//}
 
 class SNPostViewCell: UICollectionViewCell, UITextViewDelegate {
     var isVideo: Bool?
@@ -73,5 +73,5 @@ class SNPostViewCell: UICollectionViewCell, UITextViewDelegate {
 }
 protocol SNPostViewCellDelegate {
     func playButtonPressed(playbackURL: URL?)
-    func editButtonPressed(postID: String?, notes: String?, postDate: Date?,tags: [String:UIColor]?)
+    func editButtonPressed(postID: String?, notes: String?, postDate: Date?,tags: [String]?)
 }

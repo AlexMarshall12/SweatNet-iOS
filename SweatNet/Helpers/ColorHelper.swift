@@ -8,6 +8,20 @@
 
 import UIKit
 
+public func newColor() {
+    var h = CGFloat(0)
+    if let seed = UserDefaults.standard.object(forKey: "color_seed") as? CGFloat {
+        h = seed
+    } else {
+        h = CGFloat(arc4random()) / CGFloat(UInt32.max)
+    }
+    let golden_ratio_conjugate = CGFloat(0.618033988749895)
+    h += golden_ratio_conjugate
+    h = h.truncatingRemainder(dividingBy: 1.0)
+    let seed = h
+    UserDefaults.standard.set(seed,forKey:"color_seed")
+}
+
 extension CGFloat {
     static func random() -> CGFloat {
         return CGFloat(arc4random()) / CGFloat(UInt32.max)

@@ -11,7 +11,7 @@ import FirebaseStorage
 
 struct StorageService {
     // provide method for uploading images
-    static func uploadImage(_ image: UIImage, at reference: StorageReference, completion: @escaping (URL?) -> Void) {
+    static func uploadImage(_ image: UIImage, at reference: StorageReference, completion: @escaping (StorageMetadata?) -> Void) {
         // 1
         guard let imageData = UIImageJPEGRepresentation(image, 0.1) else {
             return completion(nil)
@@ -24,17 +24,18 @@ struct StorageService {
                 assertionFailure(error.localizedDescription)
                 return completion(nil)
             }
+            print(type(of: metadata),"metadatatype")
             // 4
-            completion(metadata?.downloadURL())
+            completion(metadata)
         })
     }
-    static func uploadVideo(_ videoURL: NSURL, at reference: StorageReference, completion: @escaping (URL?) -> Void){
+    static func uploadVideo(_ videoURL: NSURL, at reference: StorageReference, completion: @escaping (StorageMetadata?) -> Void){
         reference.putFile(from: videoURL as URL, metadata: nil, completion: { (metadata, error) in
             if let error = error {
                 assertionFailure(error.localizedDescription)
                 return completion(nil)
             }
-            completion(metadata?.downloadURL())
+            completion(metadata)
         })
     }
     static func uploadThumbnail(_ image: UIImage, at reference: StorageReference, completion: @escaping (URL?) -> Void){
