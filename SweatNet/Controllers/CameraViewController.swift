@@ -14,7 +14,17 @@ import MobileCoreServices
 var captureSession: AVCaptureSession?
 var videoPreviewLayer: AVCaptureVideoPreviewLayer?
 
-class CameraViewController: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+class CameraViewController: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate, CameraButtonDelegate {
+    
+    func pressedPlay() {
+        startRecording()
+        startTimer()
+    }
+    
+    func pressedPause() {
+        stopRecording()
+        stopTimer()
+    }
     
     let captureSession = AVCaptureSession()
     let movieOutput = AVCaptureMovieFileOutput()
@@ -23,15 +33,24 @@ class CameraViewController: UIViewController, UIImagePickerControllerDelegate, U
     var previewLayer: AVCaptureVideoPreviewLayer!
     var activeInput: AVCaptureDeviceInput!
     var footageURL: URL?
+    
+    var timeMin = 0
+    var timeSec = 0
+    weak var timer: Timer?
+    var isPlaying = false
+
+    
     //private var animator: UIViewPropertyAnimator?
-    private lazy var animator: UIDynamicAnimator = UIDynamicAnimator(referenceView: view)
-    private var rotate: UIDynamicItemBehavior?
-    private var rotate2: UIDynamicItemBehavior?
-
-    @IBOutlet weak var recordingSpinnerInner: UIImageView!
-    @IBOutlet weak var recordingSpinner: UIImageView!
-
+//    private lazy var animator: UIDynamicAnimator = UIDynamicAnimator(referenceView: view)
+//    private var rotate: UIDynamicItemBehavior?
+//    private var rotate2: UIDynamicItemBehavior?
+//
+//    @IBOutlet weak var recordingSpinnerInner: UIImageView!
+//    @IBOutlet weak var recordingSpinner: UIImageView!
+    @IBOutlet weak var cameraButton: CameraButton!
+    @IBOutlet weak var importButton: UIButton!
     @IBOutlet weak var camPreview: UIView!
+    @IBOutlet weak var timerLabel: UILabel!
     
     var pickedPhoto: UIImage?
     var pickedPhotoThumbnail: UIImage?
@@ -39,22 +58,142 @@ class CameraViewController: UIViewController, UIImagePickerControllerDelegate, U
     var pickedMediaThumbnail: UIImage?
     var pickedMediaDate: Date?
     
+    let squareLayer = CAShapeLayer()
+    let circleLayer = CAShapeLayer()
+    // Tells us if the current shape is a square
+    var isSquare = false
+    // Stores and sets the animation
+    var layerAnimation = CABasicAnimation(keyPath: "path")
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.recordingSpinner.isUserInteractionEnabled = true
+        self.title = "Camera"
+//        self.recordingSpinner.isUserInteractionEnabled = true
         imagePicker.delegate = self
-        let tap = UITapGestureRecognizer(target: self, action: #selector(handleTap))
-        self.recordingSpinner.addGestureRecognizer(tap)
+        cameraButton.delegate = self
+//        importButton.layer.zPosition = 1
+//        let tap = UITapGestureRecognizer(target: self, action: #selector(handleTap))
+//        self.recordingSpinner.addGestureRecognizer(tap)
         if setupSession(){
             setupPreview()
             startSession()
         }
+        
+//        let layerCenter = playButton.center
+//
+//        // Setup the square layer & add it
+//
+//        let square = squarePathWithCenter(center: layerCenter, side: 100)
+//        squareLayer.path = square.cgPath
+//        squareLayer.fillColor = UIColor.red.cgColor
+//
+//        // Setup the circle layer
+//        let circle = circlePathWithCenter(center: layerCenter, radius: 70)
+//        circleLayer.path = circle.cgPath
+//        circleLayer.fillColor = UIColor.red.cgColor
+//        self.view.layer.addSublayer(circleLayer)
+//
+//
+//        // Setup animation values that dont change
+//        layerAnimation.duration = 0.3
+//        // Sets the animation style. You can change these to see how it will affect the animations.
+//        layerAnimation.timingFunction = CAMediaTimingFunction(name: kCAMediaTimingFunctionEaseInEaseOut)
+//        layerAnimation.fillMode = kCAFillModeForwards
+//        // Dont remove the shape when the animation has been completed
+//        layerAnimation.isRemovedOnCompletion = false
     }
-    
+//    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+//        // Get the first area we touched on the device
+//        let touch = touches.first
+//        // Get the point coordinates we touched on the device
+//        let point = touch!.location(in: self.view)
+//        // If we tapped on the circle or square then change the shape
+//        if squareLayer.path!.contains(point) || circleLayer.path!.contains(point) {
+//
+//            if isSquare {
+//                // If we have a square change the shape to a circle
+//                layerAnimation.fromValue = squareLayer.path
+//                layerAnimation.toValue = circleLayer.path
+//                self.circleLayer.add(layerAnimation, forKey: "animatePath");
+//            } else {
+//                // If we have a circle change the shape to a square
+//                layerAnimation.fromValue = circleLayer.path
+//                layerAnimation.toValue = squareLayer.path
+//                self.circleLayer.add(layerAnimation, forKey: "animatePath");
+//            }
+//            // Set isSquare to the opposite.
+//            isSquare = !isSquare
+//        }
+//    }
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        self.navigationController?.navigationBar.backgroundColor = UIColor(red: 1.0, green: 0.0, blue: 0.0, alpha: 0.5)
+        timerLabel.text = String(format: "%02d:%02d", timeMin, timeSec)
     }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        self.tabBarController?.tabBar.isHidden = true
+        self.navigationController?.navigationBar.isHidden = true
+    }
+    
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+        resetTimerToZero()
+    }
+    override var shouldAutorotate: Bool {
+        return false
+    }
+    
+//    override func shouldAutorotate() -> Bool {
+//
+//        return false
+//
+//    }
+    fileprivate func startTimer(){
+        
+        // if you want the timer to reset to 0 every time the user presses record you can uncomment out either of these 2 lines
+        // timeSec = 0
+        // timeMin = 0
+        // If you don't use the 2 lines above then the timer will continue from whatever time it was stopped at
+        let timeNow = String(format: "%02d:%02d", timeMin, timeSec)
+        timerLabel.text = timeNow
+        
+        stopTimer() // stop it at it's current time before starting it again
+        timer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { [weak self] _ in
+            self?.UpdateTimer()
+        }
+    }
+
+    
+    @objc func UpdateTimer() {
+        timeSec += 1
+        if timeSec == 60 {
+            timeSec = 0
+            timeMin += 1
+        }
+        let timeNow = String(format: "%02d:%02d", timeMin, timeSec)
+        timerLabel.text = timeNow
+    }
+    
+    fileprivate func resetTimerToZero(){
+        timeSec = 0
+        timeMin = 0
+        stopTimer()
+    }
+    
+    fileprivate func resetTimerAndLabel(){
+        resetTimerToZero()
+        timerLabel.text = String(format: "%02d:%02d", timeMin, timeSec)
+    }
+    
+    fileprivate func stopTimer(){
+        timer?.invalidate()
+    }
+    @IBAction func closeButtonPressed(_ sender: Any) {
+        tabBarController?.selectedIndex = 0
+        tabBarController?.tabBar.isHidden = false
+    }
+    
     func setThumbnailFrom(path: URL) -> UIImage? {
         
         do {
@@ -79,7 +218,7 @@ class CameraViewController: UIViewController, UIImagePickerControllerDelegate, U
                 self.imagePicker.sourceType = .photoLibrary
                 self.imagePicker.allowsEditing = true
                 self.imagePicker.mediaTypes = [kUTTypeMovie as String, kUTTypeImage as String]
-                
+
                 self.present(self.imagePicker,animated: true, completion: nil)
             case .denied:
                 print("denied")
@@ -101,7 +240,7 @@ class CameraViewController: UIViewController, UIImagePickerControllerDelegate, U
         switch mediaType {
         case kUTTypeImage:
             if let pickedImage = info[UIImagePickerControllerOriginalImage] as? UIImage, let pickedAsset = info[UIImagePickerControllerPHAsset] as? PHAsset {
-                
+
                 self.pickedPhoto = pickedImage
                 MyVariables.isScreenshot = true
                 self.pickedMediaThumbnail = pickedImage
@@ -117,8 +256,8 @@ class CameraViewController: UIViewController, UIImagePickerControllerDelegate, U
                 print("KUMOVIE")
                 MyVariables.isScreenshot = false
                 let creationDate = pickedAsset.creationDate
-                print("creationDate ",creationDate)
-                print("creationDate  ",pickedAsset)
+//                print("creationDate ",creationDate)
+//                print("creationDate  ",pickedAsset)
                 self.pickedMovieURL = videoURL
                 self.pickedMediaDate = creationDate
                 self.pickedMediaThumbnail = setThumbnailFrom(path: videoURL)
@@ -130,64 +269,66 @@ class CameraViewController: UIViewController, UIImagePickerControllerDelegate, U
         case kUTTypeLivePhoto:
             print("livePhoto")
             dismiss(animated: true, completion: nil)
-            
+
             break
         default:
             dismiss(animated: false, completion: nil)
-            
+
             print("something else")
             break
         }
     }
+    
     func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
         dismiss(animated: true, completion: nil)
     }
-    
-    @objc func handleTap(_ gesture:UITapGestureRecognizer) {
-//        if animator == nil {
-//            createAnimation()
+//
+//    @objc func handleTap(_ gesture:UITapGestureRecognizer) {
+////        if animator == nil {
+////            createAnimation()
+////        }
+//        startRecording()
+//
+//        if let rotate = rotate, let rotate2 = rotate2 {
+//            animator.removeBehavior(rotate)
+//            animator.removeBehavior(rotate2)
+//            self.rotate = nil
+//            self.rotate2 = nil
+//        } else {
+//            rotate = UIDynamicItemBehavior(items: [self.recordingSpinner])
+//            rotate2 = UIDynamicItemBehavior(items: [self.recordingSpinnerInner])
+//            rotate?.allowsRotation = true
+//            rotate2?.allowsRotation = true
+//            rotate?.angularResistance = 0
+//            rotate2?.angularResistance = 0
+//            rotate?.addAngularVelocity(1, for: self.recordingSpinner)
+//            rotate2?.addAngularVelocity(-1, for: self.recordingSpinnerInner)
+//            animator.addBehavior(rotate!)
+//            animator.addBehavior(rotate2!)
 //        }
-        startRecording()
-        
-        if let rotate = rotate, let rotate2 = rotate2 {
-            animator.removeBehavior(rotate)
-            animator.removeBehavior(rotate2)
-            self.rotate = nil
-            self.rotate2 = nil
-        } else {
-            rotate = UIDynamicItemBehavior(items: [self.recordingSpinner])
-            rotate2 = UIDynamicItemBehavior(items: [self.recordingSpinnerInner])
-            rotate?.allowsRotation = true
-            rotate2?.allowsRotation = true
-            rotate?.angularResistance = 0
-            rotate2?.angularResistance = 0
-            rotate?.addAngularVelocity(1, for: self.recordingSpinner)
-            rotate2?.addAngularVelocity(-1, for: self.recordingSpinnerInner)
-            animator.addBehavior(rotate!)
-            animator.addBehavior(rotate2!)
-        }
-    }
+//    }
     
     func setupPreview() {
         // Configure previewLayer
         previewLayer = AVCaptureVideoPreviewLayer(session: captureSession)
         previewLayer.frame = camPreview.bounds
         previewLayer.videoGravity = AVLayerVideoGravity.resizeAspectFill
+        previewLayer.connection?.videoOrientation = .portrait
         camPreview.layer.addSublayer(previewLayer)
     }
 //    override func viewWillLayoutSubviews() {
-//        
+//
 //        let orientation: UIDeviceOrientation = UIDevice.current.orientation
-//        
+//
 //        switch (orientation) {
 //        case .portrait:
-//            previewLayer?.connection.videoOrientation = .Portrait
-//        case .LandscapeRight:
-//            previewLayer?.connection.videoOrientation = .LandscapeLeft
-//        case .LandscapeLeft:
-//            previewLayer?.connection.videoOrientation = .LandscapeRight
+//            previewLayer?.connection?.videoOrientation = .portrait
+//        case .landscapeRight:
+//            previewLayer?.connection?.videoOrientation = .landscapeLeft
+//        case .landscapeLeft:
+//            previewLayer?.connection?.videoOrientation = .landscapeRight
 //        default:
-//            previewLayer?.connection.videoOrientation = .Portrait
+//            previewLayer?.connection?.videoOrientation = .portrait
 //        }
 //    }
 //    private func createAnimation() {
@@ -287,6 +428,7 @@ class CameraViewController: UIViewController, UIImagePickerControllerDelegate, U
         case .portrait:
             orientation = AVCaptureVideoOrientation.portrait
         case .landscapeRight:
+            //timerLabel.transform = CGAffineTransform(rotationAngle: CGFloat.pi / 2)
             orientation = AVCaptureVideoOrientation.landscapeLeft
         case .portraitUpsideDown:
             orientation = AVCaptureVideoOrientation.portraitUpsideDown
@@ -342,8 +484,34 @@ class CameraViewController: UIViewController, UIImagePickerControllerDelegate, U
     
     @IBAction func unwindToCamera(sender: UIStoryboardSegue) {
     }
+
     
-    
+//    func circlePathWithCenter(center: CGPoint, radius: CGFloat) -> UIBezierPath {
+//        let circlePath = UIBezierPath()
+//        circlePath.addArc(withCenter: center, radius: (radius - 20), startAngle: -CGFloat(Double.pi), endAngle: -CGFloat(M_PI/2), clockwise: true)
+//        circlePath.addArc(withCenter: center, radius: (radius - 20), startAngle: -CGFloat(Double.pi/2), endAngle: 0, clockwise: true)
+//        circlePath.addArc(withCenter: center, radius: (radius - 20), startAngle: 0, endAngle: CGFloat(Double.pi/2), clockwise: true)
+//        circlePath.addArc(withCenter: center, radius: (radius - 20), startAngle: CGFloat(Double.pi/2), endAngle: CGFloat(M_PI), clockwise: true)
+//        circlePath.close()
+//        return circlePath
+//    }
+//    
+//    func squarePathWithCenter(center: CGPoint, side: CGFloat) -> UIBezierPath {
+//        let squarePath = UIBezierPath()
+//        let startX = center.x - side / 2
+//        let startY = center.y - side / 2
+//        squarePath.move(to: CGPoint(x: startX, y: startY))
+//        squarePath.addLine(to: squarePath.currentPoint)
+//        squarePath.addLine(to: CGPoint(x: startX + side, y: startY))
+//        squarePath.addLine(to: squarePath.currentPoint)
+//        squarePath.addLine(to: CGPoint(x: startX + side, y: startY + side))
+//        squarePath.addLine(to: squarePath.currentPoint)
+//        squarePath.addLine(to: CGPoint(x: startX, y: startY + side))
+//        squarePath.addLine(to: squarePath.currentPoint)
+//        squarePath.close()
+//        return squarePath
+//    }
+//    
 }
 extension CameraViewController: AVCaptureFileOutputRecordingDelegate{
     func fileOutput(_ output: AVCaptureFileOutput, didFinishRecordingTo outputFileURL: URL, from connections: [AVCaptureConnection], error: Error?) {

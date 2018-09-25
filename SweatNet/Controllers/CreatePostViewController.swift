@@ -14,7 +14,8 @@ class CreatePostViewController: UIViewController,UITextViewDelegate,UITextFieldD
     @IBOutlet weak var postThumbnail: UIImageView!
     @IBOutlet weak var addNotesTextView: UITextView!
     @IBOutlet weak var tagsView: KSTokenView!
-
+    @IBOutlet weak var playTriangle: UIImageView!
+    
     var thumbnailImage: UIImage?
     var postDate: Date?
     var screenshotOut: UIImage?
@@ -25,7 +26,7 @@ class CreatePostViewController: UIViewController,UITextViewDelegate,UITextFieldD
     var filter_items = [SearchTextFieldItem]()
     var post: Post?
     var autocompleteUrls = [String]()
-    let names: Array<String> = ["apple","banana"]
+    //let names: Array<String> = ["apple","banana"]
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -37,27 +38,43 @@ class CreatePostViewController: UIViewController,UITextViewDelegate,UITextFieldD
             }
             //self.mySearchTextField.filterItems(self.filter_items)
         }
+        self.title = "Create Post"
         addNotesTextView.delegate = self
         addNotesTextView.textColor = UIColor.lightGray
         addNotesTextView.text = "Notes..."
         tagsView.delegate = self
         tagsView.promptText = "Tags: "
         tagsView.maxTokenLimit = 5 //default is -1 for unlimited number of tokens
-        tagsView.style = .squared
+        tagsView.style = .rounded
         tagsView.searchResultHeight = 200
         tagsView.removesTokensOnEndEditing = false
         postThumbnail.contentMode = .scaleAspectFit
         postThumbnail.image = thumbnailImage
         addNotesTextView.text = "Notes..."
-//        mySearchTextField.itemSelectionHandler = { filteredResults, itemPosition in
-//            // Just in case you need the item position
-//            let item = filteredResults[itemPosition]
-//            print("Item at position \(itemPosition): \(item.title)")
-//            self.mySearchTextField.text = item.title
-//            // Do whatever you want with the picked item
-//            self.selectedTagID = item.subtitle
-//            self.selectedTagTitle = item.title
-//        }
+        navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Done", style: .plain, target: self, action: #selector(postButtonPressed))
+        playTriangle.isHidden = MyVariables.isScreenshot
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        self.navigationController?.navigationBar.isHidden = false
+        self.navigationController?.navigationBar.isTranslucent = true
+    }
+    
+    @objc func postButtonPressed() {
+        let tokens = self.tagsView.tokens()
+        let tokensArr = tokens!.map({
+            (token: KSToken) -> String in
+            return token.title
+        })
+        if MyVariables.isScreenshot == true {
+            PostService.createImagePost(image: self.screenshotOut!, timeStamp: self.postDate!, tags: tokensArr, notes: addNotesTextView.text ?? "")
+        } else {
+            PostService.createVideoPost(video: self.videoURL!, timeStamp: self.postDate!, thumbnailImage: self.thumbnailImage!, tags: tokensArr, notes: addNotesTextView.text ?? "")
+        }
+        tabBarController?.selectedIndex = 0
+        tabBarController?.tabBar.isHidden = false
+        //performSegue(withIdentifier: "ShowHomeViewController", sender: nil)
     }
     
     func textViewDidBeginEditing(_ textView: UITextView) {
@@ -73,8 +90,7 @@ class CreatePostViewController: UIViewController,UITextViewDelegate,UITextFieldD
     }
 
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        if segue.identifier == "goToCamera" {
-
+        if segue.identifier == "ShowHomeViewController" {
             //Let post service know what tag to add to the post itself.
             //let tagTitle = mySearchTextField.text!
             let tokens = self.tagsView.tokens()

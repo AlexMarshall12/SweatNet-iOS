@@ -1,12 +1,4 @@
 //
-//  TrimmerView.swift
-//  DuelingThumbs
-//
-//  Created by Alex on 3/31/18.
-//  Copyright © 2018 DonMag. All rights reserved.
-//
-
-//
 //  PryntTrimmerView.swift
 //  PryntTrimmerView
 //
@@ -20,8 +12,6 @@ import UIKit
 public protocol TrimmerViewDelegate: class {
     func didChangePositionBar(_ playerTime: CMTime)
     func positionBarStoppedMoving(_ playerTime: CMTime)
-    func playerStatus()
-    func pausePlayer()
 }
 
 /// A view to select a specific time range of a video. It consists of an asset preview with thumbnails inside a scroll view, two
@@ -65,8 +55,6 @@ public protocol TrimmerViewDelegate: class {
     private let trimView = UIView()
     private let leftHandleView = HandlerView()
     private let rightHandleView = HandlerView()
-    private let screenshotView = UIView()
-    private let screenshotText = UILabel()
     private let positionBar = UIView()
     private let leftHandleKnob = UIView()
     private let rightHandleKnob = UIView()
@@ -98,12 +86,11 @@ public protocol TrimmerViewDelegate: class {
     override func setupSubviews() {
         
         super.setupSubviews()
-
         backgroundColor = UIColor.clear
         layer.zPosition = 1
         setupTrimmerView()
         setupHandleView()
-        //setupMaskView()
+        setupMaskView()
         setupPositionBar()
         setupGestures()
         updateMainColor()
@@ -116,29 +103,11 @@ public protocol TrimmerViewDelegate: class {
         assetPreview.topAnchor.constraint(equalTo: topAnchor).isActive = true
         assetPreview.bottomAnchor.constraint(equalTo: bottomAnchor).isActive = true
     }
-    public override func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
-        if self.point(inside: point, with: event) {
-            return super.hitTest(point, with: event)
-        }
-        guard isUserInteractionEnabled, !isHidden, alpha > 0 else {
-            return nil
-        }
-        
-        for subview in subviews.reversed() {
-            let convertedPoint = subview.convert(point, from: self)
-            if let hitView = subview.hitTest(convertedPoint, with: event) {
-                return hitView
-            }
-        }
-        return nil
-    }
     
     private func setupTrimmerView() {
         
         trimView.layer.borderWidth = 2.0
         trimView.layer.cornerRadius = 2.0
-        trimView.backgroundColor = .clear
-        //trimView.heightAnchor.constraint(equalTo: heightAnchor, constant:0.1).isActive = true
         trimView.translatesAutoresizingMaskIntoConstraints = false
         trimView.isUserInteractionEnabled = false
         addSubview(trimView)
@@ -188,23 +157,6 @@ public protocol TrimmerViewDelegate: class {
         rightHandleKnob.widthAnchor.constraint(equalToConstant: 2).isActive = true
         rightHandleKnob.centerYAnchor.constraint(equalTo: rightHandleView.centerYAnchor).isActive = true
         rightHandleKnob.centerXAnchor.constraint(equalTo: rightHandleView.centerXAnchor).isActive = true
-        
-        screenshotView.isUserInteractionEnabled = true
-        screenshotView.layer.cornerRadius = 2.0
-        screenshotView.translatesAutoresizingMaskIntoConstraints = false
-        screenshotView.layer.zPosition = 999
-        addSubview(screenshotView)
-        screenshotText.text = "S"
-        screenshotText.textColor = UIColor.white
-        screenshotText.center = CGPoint(x: screenshotView.frame.width / 2, y: screenshotView.frame.height / 2)
-        screenshotView.addSubview(screenshotText)
-        screenshotView.bottomAnchor.constraint(equalTo: topAnchor,constant:0).isActive = true
-        screenshotView.centerXAnchor.constraint(equalTo: centerXAnchor,constant:0).isActive = true
-        //screenshotView.bottomAnchor.constraint(equalTo: topAnchor).isActive = true
-        screenshotView.backgroundColor = UIColor.red
-        screenshotView.heightAnchor.constraint(equalTo: heightAnchor, multiplier:0.4).isActive = true
-        screenshotView.leftAnchor.constraint(equalTo: leftHandleView.leftAnchor, constant: -20).isActive = true
-        screenshotView.rightAnchor.constraint(equalTo: rightHandleView.rightAnchor,constant: 20).isActive = true
     }
     
     private func setupMaskView() {
@@ -249,17 +201,12 @@ public protocol TrimmerViewDelegate: class {
         positionConstraint?.isActive = true
     }
     
-   
     private func setupGestures() {
         
         let leftPanGestureRecognizer = UIPanGestureRecognizer(target: self, action: #selector(TrimmerView.handlePanGesture))
         leftHandleView.addGestureRecognizer(leftPanGestureRecognizer)
         let rightPanGestureRecognizer = UIPanGestureRecognizer(target: self, action: #selector(TrimmerView.handlePanGesture))
         rightHandleView.addGestureRecognizer(rightPanGestureRecognizer)
-        let screenshotPanGuestureRecognizer = UIPanGestureRecognizer(target: self, action:
-            #selector(TrimmerView.handlePanGesture))
-        screenshotView.addGestureRecognizer(screenshotPanGuestureRecognizer)
-        print(screenshotView.frame)
     }
     
     private func updateMainColor() {
@@ -276,62 +223,34 @@ public protocol TrimmerViewDelegate: class {
     // MARK: - Trim Gestures
     
     @objc func handlePanGesture(_ gestureRecognizer: UIPanGestureRecognizer) {
-        guard let vActive = gestureRecognizer.view, let superView = gestureRecognizer.view?.superview else { return }
-        print(superView)
+        guard let view = gestureRecognizer.view, let superView = gestureRecognizer.view?.superview else { return }
+        let isLeftGesture = view == leftHandleView
         switch gestureRecognizer.state {
             
         case .began:
-            self.bringSubview(toFront: vActive)
-            
-            if vActive == leftHandleView {
+            if isLeftGesture {
                 currentLeftConstraint = leftConstraint!.constant
-                MyVariables.isScreenshot = false
-                positionBar.backgroundColor = UIColor.white
-            } else if vActive == rightHandleView {
-                positionBar.backgroundColor = UIColor.white
-                MyVariables.isScreenshot = false
-                currentRightConstraint = rightConstraint!.constant
             } else {
-                currentLeftConstraint = leftConstraint!.constant
                 currentRightConstraint = rightConstraint!.constant
             }
             updateSelectedTime(stoppedMoving: false)
         case .changed:
             let translation = gestureRecognizer.translation(in: superView)
-            if vActive == leftHandleView {
+            if isLeftGesture {
                 updateLeftConstraint(with: translation)
-            } else if vActive == rightHandleView{
-                updateRightConstraint(with: translation)
             } else {
                 updateRightConstraint(with: translation)
-                updateLeftConstraint(with: translation)
             }
-            
             layoutIfNeeded()
-            screenshotView.isHidden = (rightHandleView.frame.minX - leftHandleView.frame.maxX) > minimumDistanceBetweenHandle + 1
-            MyVariables.isScreenshot = !screenshotView.isHidden
-            if let startTime = startTime, vActive == leftHandleView {
+            if let startTime = startTime, isLeftGesture {
                 seek(to: startTime)
             } else if let endTime = endTime {
                 seek(to: endTime)
             }
-            if MyVariables.isScreenshot == true {
-                if let startTime = startTime, let endTime = endTime {
-                    seek(to: CMTimeMultiplyByFloat64(CMTimeAdd(startTime,endTime),0.5))
-                    delegate?.pausePlayer()
-                    //positionBar.backgroundColor = UIColor.red
-                } else {
-                    return
-                }
-            }
             updateSelectedTime(stoppedMoving: false)
             
         case .cancelled, .ended, .failed:
-            if screenshotView.isHidden == true {
-                updateSelectedTime(stoppedMoving: true)
-            } else {
-                updateSelectedTime(stoppedMoving: false)
-            }
+            updateSelectedTime(stoppedMoving: true)
         default: break
         }
     }
@@ -341,9 +260,7 @@ public protocol TrimmerViewDelegate: class {
         let newConstraint = min(max(0, currentLeftConstraint + translation.x), maxConstraint)
         leftConstraint?.constant = newConstraint
     }
-    private func updateScreenshotConstraint(with translation: CGPoint){
-        
-    }
+    
     private func updateRightConstraint(with translation: CGPoint) {
         let maxConstraint = min(2 * handleWidth - frame.width + leftHandleView.frame.origin.x + minimumDistanceBetweenHandle, 0)
         let newConstraint = max(min(0, currentRightConstraint + translation.x), maxConstraint)
@@ -368,6 +285,7 @@ public protocol TrimmerViewDelegate: class {
     /// Move the position bar to the given time.
     public func seek(to time: CMTime) {
         if let newPosition = getPosition(from: time) {
+            
             let offsetPosition = newPosition - assetPreview.contentOffset.x - leftHandleView.frame.origin.x
             let maxPosition = rightHandleView.frame.origin.x - (leftHandleView.frame.origin.x + handleWidth)
                 - positionBar.frame.width
@@ -387,11 +305,6 @@ public protocol TrimmerViewDelegate: class {
     public var endTime: CMTime? {
         let endPosition = rightHandleView.frame.origin.x + assetPreview.contentOffset.x - handleWidth
         return getTime(from: endPosition)
-    }
-    
-    public var currentPlayerTime: CMTime? {
-        let currentPosition = positionBar.frame.origin.x + assetPreview.contentOffset.x
-        return getTime(from: currentPosition)
     }
     
     private func updateSelectedTime(stoppedMoving: Bool) {
@@ -430,4 +343,3 @@ public protocol TrimmerViewDelegate: class {
         updateSelectedTime(stoppedMoving: false)
     }
 }
-

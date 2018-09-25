@@ -925,6 +925,7 @@ extension KSTokenView : UITableViewDelegate {
         let object: AnyObject = _resultArray[(indexPath as NSIndexPath).row]
         let title  = delegate?.tokenView(self, displayTitleForObject: object)
         let token = KSToken(title: title!, object: object)
+        token.tokenBackgroundColor = tagColors.sharedInstance.dict[title!]!
         addToken(token)
         
         if (shouldHideSearchResultsOnSelect) {

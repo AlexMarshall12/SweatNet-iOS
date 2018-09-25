@@ -33,6 +33,7 @@ struct PostService {
         }
     }
     static func createImagePost(image: UIImage, timeStamp: Date, tags: [String], notes: String) {
+        UIApplication.shared.isNetworkActivityIndicatorVisible = true
         let imageRef = StorageReference.postImageReference(timeStamp:timeStamp)
         StorageService.uploadImage(image, at: imageRef) { (metadata) in
             guard let downloadURL = metadata?.downloadURL(), let size = metadata?.size else {
@@ -45,11 +46,14 @@ struct PostService {
     }
     
     static func createVideoPost(video: URL, timeStamp: Date, thumbnailImage: UIImage, tags: [String], notes: String) {
+        print("creating video post")
+        UIApplication.shared.isNetworkActivityIndicatorVisible = true
         let videoRef = StorageReference.postVideoReference(timeStamp: timeStamp)
         StorageService.uploadVideo(video as NSURL, at: videoRef){ (metadata) in
             guard let downloadURL = metadata?.downloadURL(), let size = metadata?.size else {
                 return
             }
+            print(downloadURL,"downloadURL")
             UserService.updateStorage(forUID: User.current.uid, size: size)
             let urlString = downloadURL.absoluteString
             uploadThumbnail(urlString: urlString, timeStamp: timeStamp, thumbnailImage: thumbnailImage, tags:tags, notes: notes, isVideo: true)
@@ -85,7 +89,7 @@ struct PostService {
                 AudioServicesPlayAlertSound(SystemSoundID(1322))
                 print("Document successfully written!")
                 for (title,_) in tagDict{
-                    print(title,"tagtitle")
+                    //Creates new tag or updates it if it already exists...
                     TagService.ifTagExists(title: title, thumbnailURL: thumbnailURLString, creationDate: timeStamp)
                 }
             }

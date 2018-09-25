@@ -41,7 +41,7 @@
                                             <action selector="playButtonPressed:" destination="gTV-IL-0wX" eventType="touchUpInside" id="29b-pH-96k"/>
                                         </connections>
                                     </button>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="hc3-Rq-nIa" userLabel="Timestamp" customClass="PaddingLabel" customModule="SweatNet" customModuleProvider="target">
+                                    <label hidden="YES" opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="hc3-Rq-nIa" userLabel="Timestamp" customClass="PaddingLabel" customModule="SweatNet" customModuleProvider="target">
                                         <rect key="frame" x="343" y="350" width="42" height="20.5"/>
                                         <color key="backgroundColor" red="0.50199556350708008" green="0.49798280000686646" blue="0.50201261043548584" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                         <constraints>
@@ -134,6 +134,6 @@
         </collectionViewCell>
     </objects>
     <resources>
-        <image name="Play Triangle" width="37" height="37"/>
+        <image name="Play Triangle" width="50" height="50"/>
     </resources>
 </document>

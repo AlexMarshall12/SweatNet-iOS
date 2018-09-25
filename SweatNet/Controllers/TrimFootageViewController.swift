@@ -12,8 +12,13 @@ import os.log
 import MobileCoreServices
 import Photos
 
-class TrimFootageViewController: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
-    let imagePicker = UIImagePickerController()
+class TrimFootageViewController: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate, ThumbSelectorViewDelegate {
+    
+    func didChangeThumbPosition(_ imageTime: CMTime) {
+        playerView.player?.seek(to: imageTime, toleranceBefore: kCMTimeZero, toleranceAfter: kCMTimeZero)
+    }
+    
+//    let imagePicker = UIImagePickerController()
 
     @objc let player = AVPlayer()
     static let assetKeysRequiredToPlay = [
@@ -37,14 +42,16 @@ class TrimFootageViewController: UIViewController, UIImagePickerControllerDelega
     
     @IBOutlet weak var playerView: PlayerView!
     @IBOutlet weak var trimmerView: TrimmerView!
-    @IBOutlet weak var nextButton: UIBarButtonItem!
-    @IBOutlet weak var navigationBarTitle: UINavigationItem!
+    @IBOutlet weak var selectThumbView: ThumbSelectorView!
+
     
     var asset: AVURLAsset? {
         didSet {
             guard let newAsset = asset else { return }
             trimmerView.asset = asset
             trimmerView.delegate = self
+            selectThumbView.asset = asset
+            selectThumbView.delegate = self
             trimmerView.handleColor = UIColor.white
             trimmerView.mainColor = UIColor.gray
             trimmerView.positionBarColor = UIColor.white
@@ -80,18 +87,50 @@ class TrimFootageViewController: UIViewController, UIImagePickerControllerDelega
         //addObserver(self, forKeyPath: #keyPath(ViewController.player.currentItem.status), options: [.new, .initial], context: &playerViewControllerKVOContext)
         
         playerView.playerLayer.player = player
-        
+        self.navigationController?.navigationBar.isHidden = false
         super.viewDidAppear(animated)
         guard let footageURL = self.footageURL else {return}
         asset = AVURLAsset(url: footageURL, options: nil)
-    }
+        self.navigationController?.navigationBar.backgroundColor = UIColor(red:0.10, green:0.10, blue:0.10, alpha:1.0)
+        self.navigationController?.navigationBar.isTranslucent = false
+        self.navigationController?.navigationBar.barTintColor = UIColor(red:0.10, green:0.10, blue:0.10, alpha:1.0)
+//        self.navigationController?.navigationBar.tintColor = .white
+    } 
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
         player.pause()
+        self.navigationController?.navigationBar.backgroundColor = .white
+        self.navigationController?.navigationBar.isTranslucent = true
+        self.navigationController?.navigationBar.barTintColor = .white
     }
     override func viewDidLoad() {
-        imagePicker.delegate = self
+       // imagePicker.delegate = self
         super.viewDidLoad()
+        let segmentedControl = UISegmentedControl(items: ["Video","Screenshot"])
+        segmentedControl.selectedSegmentIndex = 0
+        segmentedControl.tintColor = UIColor(red:0.35, green:0.78, blue:0.98, alpha:1.0)
+        segmentedControl.addTarget(self, action: #selector(changedMode), for: .valueChanged)
+        navigationItem.titleView = segmentedControl
+        navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Next", style: .plain, target: self, action: #selector(nextButtonPressed))
+    }
+    
+    @objc func changedMode(sender: UISegmentedControl) {
+    switch sender.selectedSegmentIndex {
+    case 0:
+        //set to video mode
+        trimmerView.isHidden = false
+        selectThumbView.isHidden = true
+        MyVariables.isScreenshot = false
+    case 1:
+        //set to screenshot mode
+        playerView.player?.pause()
+        trimmerView.isHidden = true
+        selectThumbView.isHidden = false
+        MyVariables.isScreenshot = true
+    default:
+        //do nothing
+        print("oops")
+    }
     }
     func asynchronouslyLoadURLAsset(_ newAsset: AVURLAsset) {
         /*
@@ -286,7 +325,7 @@ class TrimFootageViewController: UIViewController, UIImagePickerControllerDelega
     }
     
     func prepareScreenshot() {
-        guard let currentTime = trimmerView.currentPlayerTime else {
+        guard let currentTime = selectThumbView.selectedTime else {
             return
         }
         self.screenshotOut = imageFromVideo(url: footageURL!, time: currentTime )
@@ -311,8 +350,7 @@ class TrimFootageViewController: UIViewController, UIImagePickerControllerDelega
         }
     }
 
-    @IBAction func nextButtonPressed(_ sender: Any) {
-
+    @objc func nextButtonPressed() {
         if MyVariables.isScreenshot == true {
             print("is screenshot")
             prepareScreenshot()
@@ -376,32 +414,31 @@ class TrimFootageViewController: UIViewController, UIImagePickerControllerDelega
     func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
         dismiss(animated: true, completion: nil)
     }
-    @IBAction func importButtonPressed(_ sender: Any) {
-        PHPhotoLibrary.requestAuthorization({status in
-            switch status {
-            case .authorized:
-                self.imagePicker.sourceType = .photoLibrary
-                self.imagePicker.allowsEditing = true
-                self.imagePicker.mediaTypes = [kUTTypeMovie as String, kUTTypeImage as String]
-                
-                self.present(self.imagePicker,animated: true, completion: nil)
-            case .denied:
-                print("denied")
-            // probably alert the user that they need to grant photo access
-            case .notDetermined:
-                print("not determined")
-            case .restricted:
-                print("restricted")
-                // probably alert the user that photo access is restricted
-            }
-        })
-        
-    }
+//    @IBAction func importButtonPressed(_ sender: Any) {
+//        PHPhotoLibrary.requestAuthorization({status in
+//            switch status {
+//            case .authorized:
+//                self.imagePicker.sourceType = .photoLibrary
+//                self.imagePicker.allowsEditing = true
+//                self.imagePicker.mediaTypes = [kUTTypeMovie as String, kUTTypeImage as String]
+//
+//                self.present(self.imagePicker,animated: true, completion: nil)
+//            case .denied:
+//                print("denied")
+//            // probably alert the user that they need to grant photo access
+//            case .notDetermined:
+//                print("not determined")
+//            case .restricted:
+//                print("restricted")
+//                // probably alert the user that photo access is restricted
+//            }
+//        })
+//
+//    }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?){
         if segue.identifier == "CreatePost_Segue" {
             guard self.thumbnailImage != nil else {
-                print(self.thumbnailImage,"thumbnailll")
                 return
             }
             if MyVariables.isScreenshot == true {

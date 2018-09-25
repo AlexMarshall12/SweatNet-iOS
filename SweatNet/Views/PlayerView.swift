@@ -18,6 +18,7 @@ class PlayerView: UIView {
         
         set {
             playerLayer.player = newValue
+
         }
     }
     

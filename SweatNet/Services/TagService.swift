@@ -44,7 +44,9 @@ struct TagService {
             if let err = err {
                 print("Error updating document: \(err)")
             } else {
-                print("Document successfully updated")
+                NotificationCenter.default.post(name: NSNotification.Name(rawValue: "load"), object: nil)
+                UIApplication.shared.isNetworkActivityIndicatorVisible = false
+                print("tag successfully updated")
             }
         }
     }
@@ -72,6 +74,8 @@ struct TagService {
                 print("Error writing document: \(err)")
             } else {
                 print("Document successfully written!")
+                NotificationCenter.default.post(name: NSNotification.Name(rawValue: "load"), object: nil)
+                UIApplication.shared.isNetworkActivityIndicatorVisible = false
             }
         }
     }

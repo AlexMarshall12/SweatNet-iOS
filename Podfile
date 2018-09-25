@@ -12,6 +12,7 @@ target 'SweatNet' do
   pod 'Firebase/Storage'
   pod 'HSLuvSwift','~>2.0.0'
   pod 'Kingfisher', '~> 4.0'
+  pod 'ChromaColorPicker'
   pod "SearchTextField"
 
   target 'SweatNetTests' do

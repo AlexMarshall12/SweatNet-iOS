@@ -62,6 +62,7 @@ class PostCollectionViewCell: UICollectionViewCell {
 //            timestampLabel.text = " " + timestampLabel.text! + " " 
             tagsView.removesTokensOnEndEditing = false
             tagsView.promptText = ""
+            notes.text = thisPost?.notes
         }
     }
     
@@ -69,6 +70,7 @@ class PostCollectionViewCell: UICollectionViewCell {
         self.delegate?.playButtonPressed(playbackURL: thisPost?.mediaURL)
     }
     @IBAction func editButtonPressed(_ sender: Any) {
+        print("edit button pressed")
         self.delegate?.editButtonPressed(postID: thisPost?.ID, notes: thisPost?.notes, postDate: thisPost?.postDate, tags: thisPost?.tags)
     }
     

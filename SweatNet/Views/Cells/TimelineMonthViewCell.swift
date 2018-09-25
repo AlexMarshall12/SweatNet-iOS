@@ -92,10 +92,9 @@ class TimelineMonthViewCell: UICollectionViewCell {
         tick.backgroundColor = UIColor(red:0.99, green:0.13, blue:0.25, alpha:1.0)
     }
     
-    func drawArrow(day:Date){
-        let dayIndex = Calendar.current.component(.day, from: day)
-        let tick = dayTicks.arrangedSubviews[dayIndex]
-        print(tick,"tickk")
+    func drawArrow(day:Int){
+        //let dayIndex = Calendar.current.component(.day, from: day)
+        let tick = dayTicks.arrangedSubviews[day]
         let tickBounds = tick.bounds
         let start_x = tickBounds.origin.x
         let start_y = tickBounds.origin.y

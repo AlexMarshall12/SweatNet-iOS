@@ -21,23 +21,59 @@ class HomeViewController: UIViewController, UICollectionViewDelegate, UICollecti
     var searchBarActive:Bool = false
 
     @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
-    @IBOutlet weak var showButton: UIBarButtonItem!
-    @IBOutlet weak var searchBar: UISearchBar!
+    let showButton = UIBarButtonItem()
+    let settingsButton = UIBarButtonItem()
+    let titleSearchBar = UISearchBar()
+    let searchController = UISearchController(searchResultsController: nil)
     
+    lazy var popOverTransitioningDelegate = PopoverPresentationManager()
+
+
     override func viewDidLoad() {
         super.viewDidLoad()
         let lpgr : UILongPressGestureRecognizer = UILongPressGestureRecognizer(target: self, action: #selector(self.handleLongPress(_:)))
         lpgr.minimumPressDuration = 0.5
         lpgr.delegate = self
         lpgr.delaysTouchesBegan = true
+        self.tabBarController?.tabBar.isHidden = false
+        NotificationCenter.default.addObserver(self, selector: #selector(reloadTags), name: NSNotification.Name(rawValue: "load"), object: nil)
+
+        searchController.searchBar.searchBarStyle = .minimal
+        searchController.searchResultsUpdater = self
+        searchController.obscuresBackgroundDuringPresentation = false
+        if #available(iOS 11.0, *) {
+            navigationItem.searchController = searchController
+        } else {
+            // Fallback on earlier versions
+            navigationItem.titleView = searchController.searchBar
+        }
+        
+        
+        definesPresentationContext = true
+        
+        searchController.searchBar.delegate = self
+
+        self.title = "tags"
         self.collectionView?.addGestureRecognizer(lpgr)
         self.collectionView.allowsMultipleSelection = true
+        let items = self.tabBarController?.tabBar.items
+        items![0].title = ""
+        items![1].title = ""
+        
+        searchController.searchBar.delegate = self
+        let settingsButton = UIButton(type: .system)
+        settingsButton.setImage(UIImage(named: "Gear"), for: .normal)
+        settingsButton.sizeToFit()
+        settingsButton.addTarget(self, action: #selector(settingsButtonPressed), for: .touchUpInside)
+        //navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Show", style: .plain, target: self, action: #selector(showButtonPressed))
+        navigationItem.leftBarButtonItem = UIBarButtonItem(customView: settingsButton)
+        self.activityIndicator.startAnimating()
         UserService.tags(for: User.current) { (tags) in
             self.activityIndicator.stopAnimating()
-//            self.tags = tags.sorted(by: {
-//                $0.latestUpdate.compare($1.latestUpdate) == .orderedAscending
-//            })
-            self.tags = tags
+            self.activityIndicator.isHidden = true
+            self.tags = tags.sorted(by: {
+                $0.latestUpdate.compare($1.latestUpdate) == .orderedDescending
+            })
             self.filteredTags = tags
             for (i,tag) in tags.enumerated() {
                 let tagColor = UIColor(red: tag.color[0],green: tag.color[1], blue: tag.color[2],alpha:1.0)
@@ -53,34 +89,47 @@ class HomeViewController: UIViewController, UICollectionViewDelegate, UICollecti
             self.resetShowButton()
             self.collectionView.reloadData()
         }
-//        let background = UIView()
-//        background.autoresizingMask = [.flexibleWidth, .flexibleHeight]
-//        background.frame = collectionView.bounds
-//        background.backgroundColor = UIColor.red
-//        collectionView.addSubview(background)
-        // Do any additional setup after loading the view.
-        
+    }
+    
+    @objc func reloadTags() {
+        UserService.tags(for: User.current) { (tags) in
+            self.tags = tags.sorted(by: {
+                $0.latestUpdate.compare($1.latestUpdate) == .orderedDescending
+            })
+            self.filteredTags = self.tags
+            for (_,tag) in tags.enumerated() {
+                let tagColor = UIColor(red: tag.color[0],green: tag.color[1], blue: tag.color[2],alpha:1.0)
+                tagColors.sharedInstance.dict[tag.title] = tagColor
+            }
+            self.collectionView.reloadData()
+        }
     }
     
     override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(false)
-        self.searchBar.delegate = self
+        super.viewDidAppear(animated)
+        self.selectedTagTitles = []
+        if #available(iOS 11.0, *) {
+            navigationItem.hidesSearchBarWhenScrolling = true
+        }
     }
-    
+
     @IBOutlet var collectionView: UICollectionView!
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        // #warning Incomplete implementation, return the number of items
-        return self.filteredTags.count
+        if isFiltering() {
+            return filteredTags.count
+        }
+        return tags.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let tag = self.filteredTags[indexPath.row]
+        let tag: Tag
+        if isFiltering() {
+            tag = filteredTags[indexPath.item]
+        } else {
+            tag = tags[indexPath.item]
+        }
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: reuseIdentifier, for: indexPath) as! SNTagViewCell
-        
-        // Configure the cell
-        //let imageURL = URL(string: tag.imageURL)
-        cell.backgroundColor = UIColor.black
         cell.tagTitle.text = " " + tag.title + " "
         if let selected = selectedCells.sharedInstance.dict[indexPath] {
             cell.isSelected = selected
@@ -109,18 +158,25 @@ class HomeViewController: UIViewController, UICollectionViewDelegate, UICollecti
                         sizeForItemAt indexPath: IndexPath) -> CGSize {
         let padding: CGFloat =  50
         let collectionViewSize = collectionView.frame.size.width - padding
-        return CGSize(width: collectionViewSize/2, height: collectionViewSize/2)
+        return CGSize(width: collectionViewSize/2, height: collectionViewSize/2 + 50)
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let tag = self.filteredTags[indexPath.item]
+        for tag in self.filteredTags {
+            print(tag.title, "filtered tag 2")
+        }
         self.tagTitle = tag.title
         self.selectedTagTitles = [tag.title]
+        
         self.performSegue(withIdentifier: "viewTagPosts", sender: nil)
-        self.collectionView.deselectItem(at: indexPath, animated: false)
     }
-    @IBAction func showButtonPressed(_ sender: Any) {
+    @objc func showButtonPressed() {
         self.performSegue(withIdentifier: "viewTagPosts", sender: nil)
+    }
+
+    @objc func settingsButtonPressed() {
+        self.performSegue(withIdentifier: "showSettings", sender: nil)
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
@@ -133,22 +189,34 @@ class HomeViewController: UIViewController, UICollectionViewDelegate, UICollecti
                 let tagTitle = tags[index.row].title
                 selectedTagTitles.append(tagTitle)
             }
-            destination.selectedTagTitles = selectedTagTitles
+            destination.selectedTagTitles = self.selectedTagTitles
+        } else if segue.identifier == "showColorPicker" {
+            if let controller = segue.destination as? TagEditViewController {
+                controller.transitioningDelegate = popOverTransitioningDelegate
+                controller.view.makeCorner(withRadius: 10.0)
+                controller.modalPresentationStyle = .custom
+            }
         }
     }
-    func searchBar(_ searchBar: UISearchBar,
-                   textDidChange searchText: String){
-        if searchText.count > 0 {
-            // search and reload data source
-            self.searchBarActive = true
-            self.filteredTags = self.tags.filter { $0.title.localizedCaseInsensitiveContains(searchText) }
-            self.collectionView?.reloadData()
-        } else {
-            // if text lenght == 0
-            // we will consider the searchbar is not active
-            self.searchBarActive = false
-            self.collectionView?.reloadData()
+    
+    func isFiltering() -> Bool {
+        return searchController.isActive && !searchBarIsEmpty()
+    }
+    
+    func searchBarIsEmpty() -> Bool {
+        // Returns true if the text is empty or nil
+        return searchController.searchBar.text?.isEmpty ?? true
+    }
+    
+    func filterContentForSearchText(_ searchText: String, scope: String = "All") {
+        self.filteredTags = self.tags.filter { $0.title.localizedCaseInsensitiveContains(searchText) }
+        for tag in self.filteredTags {
+            print(tag.title, "filtered tag")
         }
+        self.collectionView?.reloadData()
+    }
+    func adaptivePresentationStyle(for controller: UIPresentationController) -> UIModalPresentationStyle {
+        return UIModalPresentationStyle.none
     }
     @objc func handleLongPress(_ gestureRecognizer : UILongPressGestureRecognizer){
         if (gestureRecognizer.state != UIGestureRecognizerState.began){
@@ -156,53 +224,59 @@ class HomeViewController: UIViewController, UICollectionViewDelegate, UICollecti
         }
         let p = gestureRecognizer.location(in: self.collectionView)
         if let indexPath: IndexPath = self.collectionView?.indexPathForItem(at: p){
-            if let optionalCell = self.collectionView.cellForItem(at: indexPath) {
-                let cell = optionalCell as! SNTagViewCell
-                if cell.isSelected == false {
-                    selectedCells.sharedInstance.dict[indexPath] = true
-                    self.collectionView.selectItem(at: indexPath, animated: false, scrollPosition: [])
-//                    tagColors.sharedInstance.selectedTags.append(indexPath)
+            self.performSegue(withIdentifier: "showColorPicker", sender: nil)
+
+            //if let optionalCell = self.collectionView.cellForItem(at: indexPath) {
+                //let cell = optionalCell as! SNTagViewCell
+                
+//                if cell.isSelected == false {
+//                    selectedCells.sharedInstance.dict[indexPath] = true
+//                    self.collectionView.selectItem(at: indexPath, animated: false, scrollPosition: [])
+////                    tagColors.sharedInstance.selectedTags.append(indexPath)
+////                    cell.check.isHidden = false
+////                    cell.checkInner.isHidden = false
+////                    let tint = tagColors.sharedInstance.dict[cell.tagTitle.text!]
+////                    cell.check.setImageColor(color: tint!)
+//                    cell.isSelected = true
 //                    cell.check.isHidden = false
-//                    cell.checkInner.isHidden = false
-//                    let tint = tagColors.sharedInstance.dict[cell.tagTitle.text!]
-//                    cell.check.setImageColor(color: tint!)
-                    cell.isSelected = true
-                    cell.check.isHidden = false
-                } else {
-//                    tagColors.sharedInstance.selectedTags.remove(at: Int(indexPath.item))
-                    selectedCells.sharedInstance.dict[indexPath] = false
-                    self.collectionView.deselectItem(at: indexPath, animated: true)
+//                } else {
+////                    tagColors.sharedInstance.selectedTags.remove(at: Int(indexPath.item))
+//                    selectedCells.sharedInstance.dict[indexPath] = false
+//                    self.collectionView.deselectItem(at: indexPath, animated: true)
+////                    cell.check.isHidden = true
+////                    cell.checkInner.isHidden = true
+//                    cell.isSelected = false
 //                    cell.check.isHidden = true
-//                    cell.checkInner.isHidden = true
-                    cell.isSelected = false
-                    cell.check.isHidden = true
-                }
-                resetShowButton()
-            }
+//
+//                }
+                //resetShowButton()
+            //}
         }
     }
     
+
     func resetShowButton(){
         if (self.collectionView.indexPathsForSelectedItems?.count)! > 0 {
+
             showButton.isEnabled = true
         } else {
             print("selectedCell",(self.collectionView.indexPathsForSelectedItems?.count)!)
             showButton.isEnabled = false
         }
     }
-    func searchBarSearchButtonClicked(_ searchBar: UISearchBar)
-    {
-        self.searchBarActive = false
-        self.searchBar.endEditing(true)
-    }
-//    func searchBarCancelButtonClicked(_ searchBar: UISearchBar){
-//        self.searchBarActive = true
-//
-//    }
+
     @IBAction func unwindToHome(sender: UIStoryboardSegue) {
         print("unwound")
         self.selectedTagTitles.removeAll()
         print(self.selectedTagTitles,"unwound")
     }
     
+}
+
+extension HomeViewController: UISearchResultsUpdating {
+    // MARK: - UISearchResultsUpdating Delegate
+    func updateSearchResults(for searchController: UISearchController) {
+        filterContentForSearchText(searchController.searchBar.text!)
+        // TODO
+    }
 }
